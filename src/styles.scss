@@ -7,7 +7,8 @@ body {
 	margin: 0;
 	padding: 0;
 	font:
-		normal 13px/15px Arial,
+		normal 13px/15px Tahoma,
+		Arial,
 		sans-serif;
 	background: #000;
 	color: #fff;
@@ -90,5 +91,265 @@ img {
 
 .desktop {
 	background: #356397;
-	display: grid;
+	background-image: url('./assets/bliss-1440.jpg');
+	background-size: cover;
+	background-position: center 60%;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+}
+
+.desktop__icons {
+	flex: 1 1 0;
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	gap: 20px;
+	margin: 20px 0;
+	position: relative;
+}
+
+.desktop__icon {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 80px;
+	gap: 8px;
+
+	&--bin {
+		position: absolute;
+		right: 10px;
+		bottom: 12px;
+	}
+}
+
+.desktop__icon__image {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	font-size: 24px;
+}
+
+.desktop__icon__label {
+	padding: 1px;
+	border: 1px solid transparent;
+	text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+
+	.desktop__icon--selected & {
+		background: #004e98;
+		border: 1px dotted #ffb167;
+	}
+}
+
+.taskbar {
+	height: 30px;
+	background: linear-gradient(180deg, #245dd7 0%, #2561de 100%);
+	box-shadow:
+		inset 0px -2px 3px -1px #1941a5,
+		inset 0px 0px 0px 1px rgba(25, 65, 165, 0.5),
+		inset 0px 6px 3px -2px #4993e6;
+	z-index: 999;
+	display: flex;
+	align-items: stretch;
+}
+
+.taskbar__start {
+	width: 98px;
+	background: url('./assets/start.png');
+
+	&:hover {
+		filter: brightness(110%) contrast(90%);
+	}
+}
+
+.taskbar__items {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	margin: 0 8px;
+}
+
+.taskbar__item {
+	display: flex;
+	align-items: center;
+	height: 24px;
+	width: 146px;
+	padding: 0 10px;
+	min-width: 0;
+	background: linear-gradient(180deg, #4286f4 0%, #3980f4 100%);
+	box-shadow:
+		0px 1px 0px #2652bc,
+		inset 0px 0px 0px 1px #3172da,
+		inset 2px 2px 3px #6da4f6;
+	border-radius: 3px;
+
+	&--active {
+		background: linear-gradient(180deg, #164dbc 0%, #2156b7 100%);
+		box-shadow:
+			inset 0px 1px 0px #1e64d3,
+			inset 0px 2.5px 2px #123c92;
+	}
+}
+
+.taskbar__tray {
+	display: flex;
+	align-items: center;
+	padding: 0 14px 1px 12px;
+	font-size: 11px;
+	background: linear-gradient(180deg, #1291e8 0%, #1188e5 49.34%, #0ea0f1 80.85%, #0e8fea 100%);
+	box-shadow:
+		inset 0px -1px 0px #095bc9,
+		inset 0px 1px 0px #095bc9,
+		inset 1px 0px 0px #092e51,
+		inset 3px 2.5px 3px #1cc8f7;
+}
+
+.window {
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: flex;
+	flex-direction: column;
+	min-width: 200px;
+	min-height: 150px;
+	background: transparent;
+	overflow: hidden;
+	border-radius: 5px 5px 0 0;
+	border: 1px solid #0019cf;
+	border-top-width: 0;
+}
+
+.window__titlebar {
+	height: 29px;
+	color: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 5px 0 7px;
+	background: linear-gradient(180deg, #0058ee 0%, #0055e5 49.85%, #026afe 79.82%, #0060fc 100%);
+	box-shadow:
+		inset 0px 1px 0px #0019cf,
+		inset 0px -2.5px 1px -1px #0043cf,
+		inset 0px 5.5px 2px -2px #3f97ff;
+	border-radius: 5px 5px 0 0;
+
+	.window--inactive & {
+		filter: grayscale(60%) brightness(140%);
+	}
+}
+
+.window__titlebar__title {
+	font-family: 'Trebuchet MS', Tahoma, Arial, sans-serif;
+	font-size: 13px;
+	text-shadow: 1px 1px #001583;
+	transform: translateY(1px);
+
+	.window--inactive & {
+		opacity: 0.7;
+	}
+}
+
+.window__titlebar__controls {
+	display: flex;
+	gap: 2px;
+}
+
+.window__titlebar__control {
+	width: 21px;
+	height: 21px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transform: translateY(1px);
+}
+
+.window__titlebar__control--minimize {
+	background: url('./assets/window-minimize.png');
+}
+.window__titlebar__control--maximize {
+	background: url('./assets/window-maximize.png');
+}
+.window__titlebar__control--close {
+	background: url('./assets/window-close.png');
+}
+
+/* Resize handles */
+.window__resize_handle {
+	position: absolute;
+	background: transparent;
+}
+
+.window__resize_handle--n {
+	top: -3px;
+	left: 8px;
+	right: 8px;
+	height: 6px;
+	cursor: n-resize;
+}
+
+.window__resize_handle--e {
+	top: 8px;
+	right: -3px;
+	bottom: 8px;
+	width: 6px;
+	cursor: e-resize;
+}
+
+.window__resize_handle--s {
+	bottom: -3px;
+	left: 8px;
+	right: 8px;
+	height: 6px;
+	cursor: s-resize;
+}
+
+.window__resize_handle--w {
+	top: 8px;
+	left: -3px;
+	bottom: 8px;
+	width: 6px;
+	cursor: w-resize;
+}
+
+.window__resize_handle--ne {
+	top: -3px;
+	right: -3px;
+	width: 12px;
+	height: 12px;
+	cursor: ne-resize;
+}
+
+.window__resize_handle--se {
+	bottom: -3px;
+	right: -3px;
+	width: 12px;
+	height: 12px;
+	cursor: se-resize;
+}
+
+.window__resize_handle--sw {
+	bottom: -3px;
+	left: -3px;
+	width: 12px;
+	height: 12px;
+	cursor: sw-resize;
+}
+
+.window__resize_handle--nw {
+	top: -3px;
+	left: -3px;
+	width: 12px;
+	height: 12px;
+	cursor: nw-resize;
+}
+
+.window__content {
+	background: white;
+	flex: 1;
+	border: 1px solid #0934da;
+	border-top-width: 0;
 }

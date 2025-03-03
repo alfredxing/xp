@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 
 import { Desktop } from './Desktop';
+import { WindowsProvider } from './WindowsContext';
 
 export function Bootloader() {
 	const [booted, setBooted] = useState(false);
@@ -12,7 +13,11 @@ export function Bootloader() {
 	}, []);
 
 	if (booted) {
-		return <Desktop />;
+		return (
+			<WindowsProvider>
+				<Desktop />
+			</WindowsProvider>
+		);
 	} else {
 		return (
 			<div className="screen booting">
