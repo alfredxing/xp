@@ -70,9 +70,10 @@ img {
 	transform: translateX(-22px);
 	animation-name: progress;
 	animation-duration: 1s;
-	animation-iteration-count: infinite;
+	animation-iteration-count: 2.1;
 	animation-timing-function: steps(21);
 	animation-delay: 0.5s;
+	animation-fill-mode: forwards;
 }
 
 @keyframes progress {
@@ -135,6 +136,7 @@ img {
 }
 
 .desktop__icon__label {
+	font-size: 12px;
 	padding: 1px;
 	border: 1px solid transparent;
 	text-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
@@ -253,6 +255,7 @@ img {
 .window__titlebar__title {
 	font-family: 'Trebuchet MS', Tahoma, Arial, sans-serif;
 	font-size: 13px;
+	font-weight: bold;
 	text-shadow: 1px 1px #001583;
 	transform: translateY(1px);
 

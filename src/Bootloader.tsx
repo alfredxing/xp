@@ -9,7 +9,7 @@ export function Bootloader() {
 
 	useEffect(() => {
 		window.localStorage.setItem('booted', 'true');
-		setTimeout(() => setBooted(true), hasBooted ? 2500 : 5000);
+		setTimeout(() => setBooted(true), hasBooted ? 2000 : 4000);
 	}, []);
 
 	if (booted) {
