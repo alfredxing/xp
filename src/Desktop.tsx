@@ -1,4 +1,4 @@
-import { Taskbar } from './taskbar';
+import { Taskbar } from './Taskbar';
 
 export function Desktop() {
 	return (

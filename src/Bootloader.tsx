@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 
-import { Desktop } from './desktop';
+import { Desktop } from './Desktop';
 
 export function Bootloader() {
 	const [booted, setBooted] = useState(false);
@@ -17,12 +17,12 @@ export function Bootloader() {
 		return (
 			<div className="screen booting">
 				<img
-					src={new URL('../assets/boot-logo.png', import.meta.url).toString()}
+					src={new URL('./assets/boot-logo.png', import.meta.url).toString()}
 					className="booting__logo"
 				/>
 				<div className="booting__progress">
 					<img
-						src={new URL('../assets/boot-progress.png', import.meta.url).toString()}
+						src={new URL('./assets/boot-progress.png', import.meta.url).toString()}
 						className="booting__progress__bar"
 					/>
 				</div>
