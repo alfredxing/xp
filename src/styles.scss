@@ -161,6 +161,7 @@ img {
 
 .taskbar__start {
 	width: 98px;
+	flex-shrink: 0;
 	background: url('./assets/start.png');
 
 	&:hover {
@@ -170,6 +171,7 @@ img {
 
 .taskbar__items {
 	flex: 1;
+	min-width: 0;
 	display: flex;
 	align-items: center;
 	margin: 0 8px;
@@ -188,6 +190,7 @@ img {
 		inset 0px 0px 0px 1px #3172da,
 		inset 2px 2px 3px #6da4f6;
 	border-radius: 3px;
+	overflow: hidden;
 
 	&--active {
 		background: linear-gradient(180deg, #164dbc 0%, #2156b7 100%);
@@ -199,6 +202,7 @@ img {
 
 .taskbar__tray {
 	display: flex;
+	flex-shrink: 0;
 	align-items: center;
 	gap: 8px;
 	padding: 0 14px 1px 12px;
