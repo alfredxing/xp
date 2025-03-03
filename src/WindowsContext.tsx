@@ -46,12 +46,13 @@ export const WindowsProvider: React.FC<{ children: ReactNode }> = ({ children })
 	const createWindow = (window: Omit<Window, 'id' | 'isMinimized' | 'isMaximized' | 'zIndex'>) => {
 		const newZIndex = maxZIndex + 1;
 		const id = Math.random().toString(36).substr(2, 9);
+		const isSmallViewport = globalThis.innerWidth <= 1024;
 
 		const newWindow: Window = {
 			...window,
 			id,
 			isMinimized: false,
-			isMaximized: false,
+			isMaximized: isSmallViewport,
 			zIndex: newZIndex,
 		};
 

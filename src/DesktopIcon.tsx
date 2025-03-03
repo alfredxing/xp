@@ -12,6 +12,9 @@ const DesktopIcon: React.FC<DesktopIconProps> = ({ icon, label, onClick, isRecyc
 	const iconRef = useRef<HTMLDivElement>(null);
 
 	const handleClick = (e: React.MouseEvent) => {
+		if ('pointerType' in e.nativeEvent && e.nativeEvent.pointerType !== 'mouse') {
+			onClick();
+		}
 		setIsSelected(true);
 	};
 
