@@ -1,0 +1,94 @@
+* {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+	font:
+		normal 13px/15px Arial,
+		sans-serif;
+	background: #000;
+	color: #fff;
+	font-smooth: never;
+	-webkit-font-smoothing: none;
+	image-rendering: pixelated;
+	user-select: none;
+}
+
+img {
+	pointer-events: none;
+}
+
+.screen {
+	position: fixed;
+	width: 100vw;
+	height: 100vh;
+	top: 0;
+	left: 0;
+	overflow: hidden;
+	display: grid;
+}
+
+.booting {
+	opacity: 0;
+	animation: booting 0.3s linear;
+	animation-delay: 0.2s;
+	animation-fill-mode: forwards;
+}
+
+@keyframes booting {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+.booting__logo {
+	position: absolute;
+	place-self: center;
+}
+
+.booting__progress {
+	display: flex;
+	align-items: center;
+	position: absolute;
+	width: 126px;
+	height: 15px;
+	border: 1px solid #b0b0b0;
+	border-radius: 3px;
+	justify-self: center;
+	bottom: 25%;
+	overflow: hidden;
+}
+
+.booting__progress__bar {
+	transform: translateX(-22px);
+	animation-name: progress;
+	animation-duration: 1s;
+	animation-iteration-count: infinite;
+	animation-timing-function: steps(21);
+	animation-delay: 0.5s;
+}
+
+@keyframes progress {
+	from {
+		transform: translateX(-22px);
+	}
+	to {
+		transform: translateX(148px);
+	}
+}
+
+.booting__copy {
+	place-self: end start;
+	margin: 22px 20px;
+}
+
+.desktop {
+	background: #356397;
+	display: grid;
+}
