@@ -222,7 +222,7 @@ img {
 	display: flex;
 	flex-direction: column;
 	min-width: 200px;
-	min-height: 150px;
+	min-height: 100px;
 	background: transparent;
 	overflow: hidden;
 	border-radius: 5px 5px 0 0;
@@ -232,6 +232,7 @@ img {
 
 .window__titlebar {
 	height: 29px;
+	flex-shrink: 0;
 	color: #fff;
 	display: flex;
 	align-items: center;
@@ -364,7 +365,8 @@ img {
 }
 
 .window__content {
-	background: white;
+	background: #fff;
+	color: #000;
 	flex: 1;
 	border: 1px solid #0934da;
 	border-top-width: 0;

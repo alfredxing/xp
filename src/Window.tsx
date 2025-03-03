@@ -191,6 +191,7 @@ const Window: React.FC<WindowProps> = ({ window }) => {
 			className={`window ${!isActive ? 'window--inactive' : ''}`}
 			style={windowStyle}
 			onMouseDown={handleWindowFocus}
+			data-id={window.id}
 		>
 			{/* Titlebar */}
 			<div
