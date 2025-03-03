@@ -101,8 +101,7 @@ const Window: React.FC<WindowProps> = ({ window }) => {
 					borderRadius: '0',
 				}
 			: {
-					top: `${window.position.y}px`,
-					left: `${window.position.x}px`,
+					transform: `translate(${window.position.x}px, ${window.position.y}px)`,
 					width: `${window.size.width}px`,
 					height: `${window.size.height}px`,
 				}),
@@ -199,7 +198,10 @@ const Window: React.FC<WindowProps> = ({ window }) => {
 				onMouseDown={handleDragStart}
 				onDoubleClick={handleMaximizeToggle}
 			>
-				<div className="window__titlebar__title">{window.title}</div>
+				<div className="window__titlebar__title">
+					{window.icon && <span className="window__titlebar__title__icon">{window.icon}</span>}
+					{window.title}
+				</div>
 				<div className="window__titlebar__controls">
 					<div
 						className="window__titlebar__control window__titlebar__control--minimize"

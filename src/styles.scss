@@ -198,6 +198,7 @@ img {
 .taskbar__tray {
 	display: flex;
 	align-items: center;
+	gap: 8px;
 	padding: 0 14px 1px 12px;
 	font-size: 11px;
 	background: linear-gradient(180deg, #1291e8 0%, #1188e5 49.34%, #0ea0f1 80.85%, #0e8fea 100%);
@@ -206,6 +207,12 @@ img {
 		inset 0px 1px 0px #095bc9,
 		inset 1px 0px 0px #092e51,
 		inset 3px 2.5px 3px #1cc8f7;
+}
+
+.taskbar__tray__msn {
+	width: 16px;
+	height: 16px;
+	background: url('./assets/msn.png');
 }
 
 .window {
@@ -253,6 +260,11 @@ img {
 	}
 }
 
+.window__titlebar__title__icon {
+	text-shadow: none;
+	margin-right: 4px;
+}
+
 .window__titlebar__controls {
 	display: flex;
 	gap: 2px;
@@ -265,6 +277,10 @@ img {
 	align-items: center;
 	justify-content: center;
 	transform: translateY(1px);
+
+	.window:not(.window--inactive) &:hover {
+		filter: brightness(120%) contrast(90%);
+	}
 }
 
 .window__titlebar__control--minimize {

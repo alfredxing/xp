@@ -59,7 +59,10 @@ export const Taskbar: React.FC = () => {
 					</div>
 				))}
 			</div>
-			<div className="taskbar__tray">{formatTime(currentTime)}</div>
+			<div className="taskbar__tray">
+				<div className="taskbar__tray__msn" />
+				{formatTime(currentTime)}
+			</div>
 		</div>
 	);
 };
