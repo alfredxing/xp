@@ -1,17 +1,8 @@
-import type * as React from 'react';
 import { useState, useEffect } from 'react';
 import { useWindows } from './WindowsContext';
 
-export const Taskbar: React.FC = () => {
-	const {
-		windows,
-		activeWindowId,
-		focusWindow,
-		restoreWindow,
-		minimizeWindow,
-		createWindow,
-		closeWindow,
-	} = useWindows();
+export const Taskbar = ({ openExplorer }: { openExplorer: () => void }) => {
+	const { windows, activeWindowId, focusWindow, restoreWindow, minimizeWindow } = useWindows();
 	const [currentTime, setCurrentTime] = useState(new Date());
 
 	// Update the clock
@@ -52,35 +43,9 @@ export const Taskbar: React.FC = () => {
 		}
 	};
 
-	// Handle start button click
-	const handleStartClick = () => {
-		createWindow({
-			title: 'explorer.exe',
-			content: (() => {
-				const onClick = (e: React.MouseEvent) => {
-					const windowElement = e.currentTarget.closest('.window');
-					const windowId = windowElement?.getAttribute('data-id');
-					if (windowId) closeWindow(windowId);
-				};
-
-				return (
-					<div style={{ padding: '8px 0 16px' }}>
-						<p style={{ textAlign: 'center', margin: '1em 0' }}>Application not found.</p>
-						<section className="field-row" style={{ justifyContent: 'center' }}>
-							<button onClick={onClick}>OK</button>
-						</section>
-					</div>
-				);
-			})(),
-			position: { x: 100, y: 100 },
-			size: { width: 300, height: 124 },
-			fixedSize: true,
-		});
-	};
-
 	return (
 		<div className="taskbar">
-			<div className="taskbar__start" onClick={handleStartClick} />
+			<div className="taskbar__start" onClick={openExplorer} />
 			<div className="taskbar__items">
 				{windows.map((window) => (
 					<div

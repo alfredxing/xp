@@ -220,7 +220,7 @@ Sophie`}
 
 	const openJi = () => {
 		createWindow({
-			title: 'yash.txt - Notepad',
+			title: 'ji.txt - Notepad',
 			content: (
 				<Notepad
 					text={`Hi Felix, it was so awesome working with you and getting to know you closely the past year! You hired 6 people that's 100% growth, and more importantly built an incredible team that's fun and high impact. I trust you with hardest challenges with our org and glad I have you as a partner to lead the team together! Looking forward to more years to come! And maybe beautiful wedding photos in Italy!`}
@@ -290,7 +290,10 @@ Slim`}
 					</div>
 				);
 			})(),
-			position: { x: 100, y: 100 },
+			position: {
+				x: (window.innerWidth / 2 - 300 / 2) | 0,
+				y: (window.innerHeight / 2 - 124 / 2) | 0,
+			},
 			size: { width: 300, height: 124 },
 			fixedSize: true,
 		});
@@ -340,7 +343,7 @@ Slim`}
 			{windows.map(
 				(window) => !window.isMinimized && <WindowComponent key={window.id} window={window} />,
 			)}
-			<Taskbar />
+			<Taskbar openExplorer={openExplorer} />
 		</div>
 	);
 };
