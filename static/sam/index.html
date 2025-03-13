@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Oops</title>
+  <meta name="theme-color" content="#106faa">
+  <link rel="stylesheet" href="css/bsod.css">
+</head>
+  <body>
+  <main>
+    <header>
+      <h1 class="emotion">:(</h1>
+    </header>
+    <a class="description">Your very real Windows XP machine ran into a problem and needs to restart. We're just collecting some error info, and then we'll restart for you.<br>Let's all take this opportunity to appreciate the amazing work you've done over the years to not have these kinds of errors actually happen.<p><span id="progress">0</span>% complete</p></a>
+    <table>
+      <tr>
+        <td><div id="qrcode" style="padding: 16px; width: 110px; height: 110px; background: #fff; display: inline-block"></div></td>
+        <td style="position: absolute; margin-top: -23px;">
+          <p style="margin-left: 8px"><small>For more information about this issue and possible fixes, visit<br><a style="text-decoration:none; color: #FFF" href="">https://how-to-fix-bsod.com</a></small></p>
+          <p style="margin-left: 8px"><small>If you call a support person, give them this info:<span></span></small></p>
+          <p style="margin-left: 8px">Stop code: COMPUTER_NOT_REAL</p>
+        </td>
+      </tr>
+    </table>
+  </main>
+
+  </body>
+
+  <script src="js/qrcode.js"></script>
+
+  <script type="text/javascript">
+    const url = 'aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1kUXc0dzlXZ1hjUQ=='
+
+    new QRCode(document.getElementById("qrcode"), {
+      text: atob(url),
+      width: 110,
+      height: 110,
+      colorDark : "#106faa",
+      colorLight : "#ffffff",
+      correctLevel : QRCode.CorrectLevel.H
+    });
+
+    document.querySelectorAll('a')[1].href = atob(url)
+
+    let p = 0;
+    const interval = setInterval(() => {
+      if (p === 100) {
+        // Hi alfred, you can hide the BSOD here
+        window.top.postMessage('reboot', '*')
+        clearInterval(interval)
+        return;
+      }
+      p += 10
+      document.getElementById('progress').innerHTML = p;
+    }, 1000)
+  </script>
+
+</html>
