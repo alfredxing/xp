@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        background-color: #000;
+        color: #fff;
+        font-family: 'Segoe UI', sans-serif;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+      }
+
+      #container {
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Windows Vista Installer Styles */
+      #installer {
+        display: block;
+        height: 100%;
+        width: 100%;
+        background: linear-gradient(to bottom, #004e98, #003366);
+        position: relative;
+        font-family: 'Segoe UI', sans-serif;
+      }
+
+      .installer-window {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 640px;
+        background-color: #fff;
+        color: #000;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        border-radius: 6px;
+      }
+
+      .window-header {
+        background: linear-gradient(to bottom, #5b92e5, #4a7dcb);
+        padding: 12px 20px;
+        font-weight: normal;
+        font-size: 18px;
+        color: #ffffff;
+        border-top-left-radius: 6px;
+        border-top-right-radius: 6px;
+        border-bottom: 1px solid #3a5d99;
+      }
+
+      .window-content {
+        padding: 25px;
+        position: relative;
+        font-size: 14px;
+      }
+
+      .window-content h2 {
+        margin-top: 0;
+        color: #003366;
+        font-weight: normal;
+        font-size: 24px;
+        margin-bottom: 15px;
+      }
+
+      .window-content p {
+        margin-bottom: 15px;
+        line-height: 1.5;
+      }
+
+      .vista-logo {
+        float: left;
+        margin-right: 20px;
+        width: 80px;
+        height: 80px;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="%234A89DC"/><circle cx="50" cy="50" r="40" fill="%230050EF"/><path d="M50 20 L70 55 L50 80 L30 55 Z" fill="white"/></svg>');
+        background-size: contain;
+      }
+
+      .options {
+        margin-top: 25px;
+        padding: 15px;
+        border: 1px solid #d9d9d9;
+        background-color: #f5f5f5;
+        border-radius: 4px;
+      }
+
+      .option {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 12px;
+      }
+
+      .option input {
+        margin-top: 3px;
+        margin-right: 10px;
+      }
+
+      .option div {
+        font-size: 14px;
+      }
+
+      .option div span {
+        display: block;
+        color: #666666;
+        font-size: 12px;
+        margin-top: 4px;
+      }
+
+      .button-bar {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 30px;
+      }
+
+      .vista-button {
+        padding: 7px 22px;
+        margin-left: 12px;
+        background: linear-gradient(to bottom, #f0f0f0, #e5e5e5);
+        border: 1px solid #b2b2b2;
+        border-radius: 3px;
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 13px;
+        color: #000000;
+        cursor: pointer;
+      }
+
+      .vista-button.primary {
+        background: linear-gradient(to bottom, #92c0f0, #6ca4e6);
+        border: 1px solid #4a7dcb;
+        color: #ffffff;
+      }
+
+      /* BIOS Post Screen Styles */
+      #bootScreen {
+        display: none;
+        flex-direction: column;
+        height: 100%;
+        width: 100%;
+        background-color: #000;
+        color: #fff;
+        font-family: 'Courier New', monospace;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      .post {
+        margin-bottom: 6px;
+        white-space: pre;
+      }
+
+      /* Windows Vista Startup Styles */
+      #vistaStartup {
+        display: none;
+        height: 100%;
+        width: 100%;
+        background-color: #000000;
+        position: relative;
+      }
+
+      #vistaLogo {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: #ffffff;
+      }
+
+      #vistaImage {
+        width: 200px;
+        height: 200px;
+        margin-bottom: 20px;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="90" fill="%234A89DC"/><circle cx="100" cy="100" r="80" fill="%230050EF"/><path d="M100 40 L140 110 L100 160 L60 110 Z" fill="white"/></svg>');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+
+      #progressBar {
+        width: 200px;
+        height: 6px;
+        background-color: #333333;
+        margin: 0 auto;
+        position: relative;
+        overflow: hidden;
+        border-radius: 3px;
+      }
+
+      #progressInner {
+        position: absolute;
+        height: 100%;
+        background-color: #77b5fe;
+        width: 0;
+        border-radius: 3px;
+      }
+
+      /* BSOD Styles */
+      #bsod {
+        display: none;
+        height: 100%;
+        width: 100%;
+        background-color: #104e8b;
+        color: #ffffff;
+        font-family: 'Segoe UI', sans-serif;
+        padding: 40px;
+        box-sizing: border-box;
+      }
+
+      #bsod h1 {
+        margin-top: 0;
+        margin-bottom: 30px;
+        font-size: 30px;
+        font-weight: normal;
+      }
+
+      #bsod p {
+        margin-bottom: 20px;
+        font-size: 16px;
+        line-height: 1.5;
+      }
+
+      #bsod .code {
+        margin-top: 40px;
+        margin-bottom: 40px;
+        font-family: 'Consolas', monospace;
+        background-color: #0d4272;
+        padding: 20px;
+        border-radius: 3px;
+      }
+
+      #bsod .advice {
+        margin-top: 40px;
+        font-size: 14px;
+        color: #e0e0e0;
+      }
+
+      .blinking-cursor {
+        animation: blink 1s step-end infinite;
+      }
+
+      @keyframes blink {
+        from,
+        to {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <!-- Windows Vista Installer Screen -->
+      <div id="installer">
+        <div class="installer-window">
+          <div class="window-header">Windows Vista™ Setup</div>
+          <div class="window-content">
+            <div class="vista-logo"></div>
+            <h2>Installation Complete</h2>
+            <p>
+              Windows Vista™ has been successfully installed on your computer. Before you can use
+              Windows, you must restart your computer.
+            </p>
+
+            <div class="options">
+              <div class="option">
+                <input type="radio" id="restart-now" name="restart" checked />
+                <div>
+                  <label for="restart-now">Restart now</label>
+                  <span>Your computer will restart immediately.</span>
+                </div>
+              </div>
+              <div class="option">
+                <input type="radio" id="restart-later" name="restart" />
+                <div>
+                  <label for="restart-later">Restart later</label>
+                  <span
+                    >You will need to restart your computer manually before using Windows
+                    Vista™.</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="button-bar">
+              <button id="back-button" class="vista-button" disabled>Back</button>
+              <button id="next-button" class="vista-button primary">Finish</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BIOS POST Screen -->
+      <div id="bootScreen">
+        <div class="post"></div>
+      </div>
+
+      <!-- Windows Vista Startup Screen -->
+      <div id="vistaStartup">
+        <div id="vistaLogo">
+          <div id="vistaImage"></div>
+          <div id="progressBar">
+            <div id="progressInner"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Blue Screen of Death -->
+      <div id="bsod">
+        <h1>Happy 2 years, Felix!</h1>
+        <p>
+          Windows has encountered a problem and needs to close to prevent damage to your computer.
+        </p>
+        <p>Technical information:</p>
+        <div class="code">
+          *** STOP: 0x0000007B (0xFFFFF880009A9928, 0xFEL1X1S4W3S0ME, 0x0000000000000000,
+          0x0000000000000000)
+          <br /><br />
+          UNMOUNTABLE_BOOT_VOLUME
+          <br /><br />
+          * System Diagnostics Report: FELIX_2YR.DMP *
+          <br /><br />
+          CACHE_HIT_RATE: 100% [Felix always has the right info when needed]<br />
+          UPTIME_STATUS: 730 days [Legendary and counting]<br />
+          MEMORY_INTEGRITY: No leaks detected [Remembers everything important]<br />
+          ARCHITECTURE_MODEL: Premium [Best block model for other blocks]<br />
+          BOOT_SEQUENCE: Optimal [Boots up every morning with incredible initialization
+          protocols]<br />
+          COMPATIBILITY_CHECK: Complete [Backward compatible with all team members while still
+          running latest features]<br />
+          PERFORMANCE_MONITOR: Exceptional [Overclocks during crunch time without overheating]<br />
+          <br />
+          SYSTEM_CONCLUSION: Notion is extremely fortunate to have this resource.
+        </div>
+        <p class="advice">
+          If this is the first time you've seen this error screen, restart your computer. If this
+          screen appears again, follow these steps:
+          <br /><br />
+          Celebrate Felix's contributions. Appreciate his debugging skills and organizational
+          efficiency. Recognize that his positive impact extends far beyond his technical
+          capabilities. Acknowledge that the Notion system runs more smoothly with him on board.
+          <br /><br />
+          You may reach out to Lalit if you need help unplugging and plugging back in.
+        </p>
+      </div>
+    </div>
+
+    <script>
+      const installer = document.getElementById('installer');
+      const nextButton = document.getElementById('next-button');
+      const bootScreen = document.getElementById('bootScreen');
+      const postElement = document.querySelector('.post');
+      const vistaStartup = document.getElementById('vistaStartup');
+      const progressInner = document.getElementById('progressInner');
+      const bsod = document.getElementById('bsod');
+
+      // Start the installation completion screen
+      nextButton.addEventListener('click', startBootSequence);
+
+      function startBootSequence() {
+        // Hide installer and show boot screen
+        installer.style.display = 'none';
+        bootScreen.style.display = 'flex';
+
+        // Start POST messages
+        setTimeout(typePost, 1000);
+      }
+
+      // BIOS POST messages
+      const postMessages = [
+        'American Megatrends BIOS v6.23',
+        'Copyright (C) 2006-2007, American Megatrends Inc.',
+        '',
+        'INTEL(R) Core(TM)2 Duo CPU E6600 @ 2.40GHz',
+        'Memory Test: 2048MB OK',
+        '',
+        'Detecting IDE Devices...',
+        'ATA Channel 0: SAMSUNG HD300LD (300 GB)',
+        'ATA Channel 1: PIONEER DVD-RW DVR-111D',
+        'SATA Port 0: None',
+        'SATA Port 1: None',
+        '',
+        'Press DEL to enter SETUP, F12 for Network Boot',
+        '08/15/2007 - ICH8 - 2A69KAAN7-00',
+        '',
+        'Starting Windows Vista...',
+      ];
+
+      let currentPostIndex = 0;
+      let currentPostChar = 0;
+
+      // Type out BIOS messages
+      function typePost() {
+        if (currentPostIndex < postMessages.length) {
+          const currentMessage = postMessages[currentPostIndex];
+
+          if (currentPostChar < currentMessage.length) {
+            postElement.textContent += currentMessage.charAt(currentPostChar);
+            currentPostChar++;
+            setTimeout(typePost, 10);
+          } else {
+            postElement.textContent += '\n';
+            currentPostIndex++;
+            currentPostChar = 0;
+            setTimeout(typePost, 200);
+          }
+        } else {
+          // Move to Windows Vista boot
+          setTimeout(startVista, 1000);
+        }
+      }
+
+      // Start Windows Vista boot sequence
+      function startVista() {
+        bootScreen.style.display = 'none';
+        vistaStartup.style.display = 'block';
+
+        // Animate the progress bar
+        let progress = 0;
+
+        const progressInterval = setInterval(() => {
+          progress += 1;
+          progressInner.style.width = progress + '%';
+
+          if (progress >= 80) {
+            clearInterval(progressInterval);
+            setTimeout(showBSOD, 1000);
+          }
+        }, 60);
+      }
+
+      // Show the Blue Screen of Death
+      function showBSOD() {
+        vistaStartup.style.display = 'none';
+        bsod.style.display = 'block';
+      }
+    </script>
+  </body>
+</html>

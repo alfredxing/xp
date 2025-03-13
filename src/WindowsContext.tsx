@@ -13,6 +13,8 @@ export interface Window {
 	// For normal windows, this is the current size
 	size: { width: number; height: number };
 	icon?: string;
+	taskbarIcon?: string;
+	fixedSize?: boolean;
 }
 
 interface WindowsContextType {

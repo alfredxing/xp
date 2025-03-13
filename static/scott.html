@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="scroll.css" />
+    <script>
+      (function () {
+        const originalConsole = window.console;
+        window.console = {
+          log: (...args) => {
+            originalConsole.log(...args);
+            window.parent.postMessage({ type: 'console', message: args.join(' ') }, '*');
+          },
+          error: (...args) => {
+            originalConsole.error(...args);
+            window.parent.postMessage(
+              { type: 'console', message: 'Error: ' + args.join(' ') },
+              '*',
+            );
+          },
+          warn: (...args) => {
+            originalConsole.warn(...args);
+            window.parent.postMessage(
+              { type: 'console', message: 'Warning: ' + args.join(' ') },
+              '*',
+            );
+          },
+        };
+
+        window.addEventListener('error', (event) => {
+          window.parent.postMessage(
+            { type: 'console', message: 'Uncaught Error: ' + event.message },
+            '*',
+          );
+        });
+      })();
+    </script>
+
+    <title>~*~*~ Happy Two Years Felix! ~*~*~</title>
+    <style>
+      body {
+        background-color: #000080;
+        color: #ffff00;
+        font-family: 'Comic Sans MS', cursive, sans-serif;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+        background-image: url('data:image/gif;base64,R0lGODlhFAAUAIAAAAAAAP///yH5BAEAAAEALAAAAAAUABQAAAImjI+py+0Po5y02ouz3rz7D4biSJbmiabqyrbuC8fyTNf2jef6VgAAOw==');
+      }
+
+      .container {
+        width: 700px;
+        margin: 20px auto;
+        border: 5px solid #ff00ff;
+        background-color: #000000;
+        padding: 15px;
+      }
+
+      h1 {
+        font-size: 36px;
+        color: #ff00ff;
+        text-shadow: 2px 2px #00ffff;
+        margin-bottom: 30px;
+      }
+
+      .message {
+        font-size: 24px;
+        margin: 20px;
+        line-height: 1.5;
+      }
+
+      .hit-counter {
+        background-color: #000000;
+        border: 2px solid #888888;
+        display: inline-block;
+        padding: 5px;
+        margin: 20px auto;
+        color: #33ff33;
+        font-family: 'Courier New', monospace;
+        font-weight: bold;
+        font-size: 20px;
+      }
+
+      .webmaster {
+        font-size: 12px;
+        margin-top: 30px;
+        color: #ffffff;
+        font-family: 'Arial', sans-serif;
+      }
+
+      .blink {
+        animation: blinker 1s linear infinite;
+      }
+
+      @keyframes blinker {
+        50% {
+          opacity: 0;
+        }
+      }
+
+      .divider {
+        width: 100%;
+        text-align: center;
+        margin: 20px 0;
+        font-size: 24px;
+        color: #00ffff;
+      }
+
+      .running-man {
+        margin: 15px auto;
+        display: block;
+        background-color: white;
+        padding: 10px;
+        border: 3px solid #ffffff;
+        width: 250px;
+        height: 180px;
+      }
+
+      marquee {
+        margin: 20px 0;
+        font-size: 18px;
+        color: #00ff00;
+        background-color: #000000;
+        padding: 5px;
+        border: 1px dashed #ff0000;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="blink">~*~*~ Happy Two Years Felix! ~*~*~</h1>
+
+      <marquee scrollamount="5" direction="left" behavior="scroll">
+        ★★★ Congratulations on 2 AMAZING Years, Felix! ★★★ Best Colleague Ever! ★★★ Keep Shining!
+        ★★★
+      </marquee>
+
+      <div class="message">It's such a pleasure working with you!</div>
+
+      <div class="divider">*·.·´¯`·.·* *·.·´¯`·.·* *·.·´¯`·.·*</div>
+
+      <svg class="running-man" viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+        <!-- Head -->
+        <circle cx="70" cy="40" r="15" fill="#FFD700" stroke="#000" stroke-width="2"></circle>
+
+        <!-- Body -->
+        <line x1="70" y1="55" x2="70" y2="90" stroke="#000" stroke-width="4"></line>
+
+        <!-- Arms -->
+        <line x1="70" y1="65" x2="45" y2="80" stroke="#000" stroke-width="3"></line>
+        <!-- Left arm back -->
+        <line x1="70" y1="65" x2="95" y2="55" stroke="#000" stroke-width="3"></line>
+        <!-- Right arm forward -->
+
+        <!-- Legs -->
+        <line x1="70" y1="90" x2="50" y2="120" stroke="#000" stroke-width="4"></line>
+        <!-- Left leg back -->
+        <line x1="70" y1="90" x2="95" y2="115" stroke="#000" stroke-width="4"></line>
+        <!-- Right leg forward -->
+
+        <!-- Motion lines -->
+        <line x1="30" y1="40" x2="45" y2="40" stroke="#000" stroke-width="2"></line>
+        <line x1="25" y1="60" x2="40" y2="60" stroke="#000" stroke-width="2"></line>
+        <line x1="20" y1="80" x2="35" y2="80" stroke="#000" stroke-width="2"></line>
+        <line x1="30" y1="100" x2="45" y2="100" stroke="#000" stroke-width="2"></line>
+
+        <!-- Face -->
+        <circle cx="75" cy="35" r="2" fill="#000"></circle>
+        <!-- Eye -->
+        <path d="M65 45 Q 70 50, 75 45" fill="none" stroke="#000" stroke-width="1.5"></path>
+        <!-- Smile -->
+      </svg>
+
+      <div class="divider">*·.·´¯`·.·* *·.·´¯`·.·* *·.·´¯`·.·*</div>
+
+      <div>
+        <p>Visitors to this page:</p>
+        <div class="hit-counter" id="counter">486355</div>
+      </div>
+
+      <marquee scrollamount="3" direction="right" behavior="alternate">
+        This site best viewed in Internet Explorer at 800x600 resolution
+      </marquee>
+
+      <div class="webmaster">
+        Webmaster: Scott Sandler | Last Updated: 03/11/2025 | © 2025 All Rights Reserved
+      </div>
+    </div>
+
+    <script>
+      // Generate a random number between 100000 and 999999 for the hit counter
+      window.onload = function () {
+        const randomVisitors = Math.floor(Math.random() * 900000) + 100000;
+        document.getElementById('counter').innerText = randomVisitors;
+      };
+    </script>
+  </body>
+</html>

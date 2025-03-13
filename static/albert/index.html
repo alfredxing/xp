@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MS Paint XP Clone</title>
+    <style>
+        body {
+            font-family: 'MS Sans Serif', Tahoma, sans-serif;
+            background-color: #ECE9D8;
+            margin: 0;
+        }
+        .paint-app {
+            display: flex;
+            flex-direction: column;
+            background-color: #ECE9D8;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .menu-bar {
+            display: flex;
+            background-color: #ECE9D8;
+            border-bottom: 1px solid #ACA899;
+            padding: 2px 0;
+            user-select: none;
+        }
+        .menu-item {
+            padding: 2px 8px;
+            font-size: 11px;
+            cursor: default;
+        }
+        .menu-item:hover {
+            background-color: #316AC5;
+            color: white;
+        }
+        .menu-item:active {
+            background-color: #215AAF;
+            color: white;
+        }
+        .menu-container {
+            position: relative;
+        }
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 150px;
+            background-color: #F1EFE2;
+            border: 1px solid #ACA899;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+        }
+        .dropdown-menu-item {
+            padding: 4px 10px;
+            font-size: 11px;
+            cursor: default;
+        }
+        .dropdown-menu-item:hover {
+            background-color: #316AC5;
+            color: white;
+        }
+        .dropdown-menu-item:active {
+            background-color: #215AAF;
+            color: white;
+        }
+        .dropdown-menu-separator {
+            height: 1px;
+            background-color: #ACA899;
+            margin: 3px 0;
+        }
+        .dropdown-menu-item.disabled {
+            color: #A0A0A0;
+        }
+        .dropdown-menu-item.disabled:hover {
+            background-color: transparent;
+            color: #A0A0A0;
+        }
+        .content-area {
+            display: flex;
+            flex-direction: row;
+            height: calc(100vh - 50px);
+            border-top: 1px solid #FFFFFF;
+            border-left: 1px solid #FFFFFF;
+        }
+        .tools-area {
+            display: flex;
+            flex-direction: column;
+            background-color: #ECE9D8;
+            border-right: 1px solid #ACA899;
+            padding: 2px;
+        }
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2px;
+        }
+        .tool {
+            width: 26px;
+            height: 26px;
+            background-color: #ECE9D8;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            border-radius: 3px;
+        }
+        .tool:hover {
+            background-color: #fafafa;
+            border: 1px solid #aaa;
+        }
+        .tool.active {
+            background-color: #FEFEFE;
+            border: 1px solid #888;
+        }
+        .canvas-and-colors {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        .color-palette {
+            background-color: #ECE9D8;
+            padding: 5px;
+            border-top: 1px solid #ACA899;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .color-row {
+            display: flex;
+            width: 100%;
+        }
+        .color {
+            width: 20px;
+            height: 20px;
+            margin: 2px;
+            border: 1px solid #ACA899;
+            cursor: pointer;
+        }
+        .color:hover {
+            border: 1px solid #0A246A;
+        }
+        .color.active {
+            border: 1px solid black;
+            outline: 1px solid white;
+        }
+        .canvas-container {
+            flex-grow: 1;
+            padding: 5px;
+            overflow: auto;
+            background-color: #808080;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+        }
+        #paint-canvas {
+            background-color: white;
+            cursor: crosshair;
+            /* Pixelated rendering */
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+        .canvas-wrapper {
+            position: relative;
+        }
+        #overlay-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+        .status-bar {
+            background-color: #ECE9D8;
+            border-top: 1px solid #ACA899;
+            padding: 5px;
+            font-size: 12px;
+            display: flex;
+        }
+        .tool-icon {
+            font-size: 16px;
+            line-height: 1;
+            background-image: url('tools.png');
+            background-size: 256px 16px;
+            background-repeat: no-repeat;
+            width: 16px;
+            height: 16px;
+        }
+        .selection-info {
+            margin-left: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="paint-app">
+        <div class="menu-bar">
+            <div class="menu-container">
+                <div class="menu-item" id="file-menu">File</div>
+                <div class="dropdown-menu" id="file-dropdown">
+                    <div class="dropdown-menu-item">New</div>
+                    <div class="dropdown-menu-item">Open...</div>
+                    <div class="dropdown-menu-item">Save</div>
+                    <div class="dropdown-menu-item">Save As...</div>
+                    <div class="dropdown-menu-separator"></div>
+                    <div class="dropdown-menu-item">Print Preview</div>
+                    <div class="dropdown-menu-item">Page Setup...</div>
+                    <div class="dropdown-menu-item">Print...</div>
+                    <div class="dropdown-menu-separator"></div>
+                    <div class="dropdown-menu-item">Send...</div>
+                    <div class="dropdown-menu-separator"></div>
+                    <div class="dropdown-menu-item">Set As Background</div>
+                    <div class="dropdown-menu-separator"></div>
+                    <div class="dropdown-menu-item">Recent File</div>
+                    <div class="dropdown-menu-separator"></div>
+                    <div class="dropdown-menu-item">Exit</div>
+                </div>
+            </div>
+            <div class="menu-item">Edit</div>
+            <div class="menu-item">View</div>
+            <div class="menu-item">Image</div>
+            <div class="menu-item">Colors</div>
+            <div class="menu-item">Help</div>
+        </div>
+        <div class="content-area">
+            <div class="tools-area">
+                <div class="tool-grid">
+                    <button class="tool" id="select-free-tool" title="Free-form Selection">
+                        <span class="tool-icon" style="background-position: 0 0;"></span>
+                    </button>
+                    <button class="tool" id="select-rect-tool" title="Rectangle Selection">
+                        <span class="tool-icon" style="background-position: -16px 0;"></span>
+                    </button>
+                    <button class="tool" id="eraser-tool" title="Eraser">
+                        <span class="tool-icon" style="background-position: -32px 0;"></span>
+                    </button>
+                    <button class="tool" id="fill-tool" title="Fill">
+                        <span class="tool-icon" style="background-position: -48px 0;"></span>
+                    </button>
+                    <button class="tool active" id="pencil-tool" title="Pencil">
+                        <span class="tool-icon" style="background-position: -96px 0;"></span>
+                    </button>
+                    <button class="tool" id="brush-tool" title="Brush">
+                        <span class="tool-icon" style="background-position: -112px 0;"></span>
+                    </button>
+                    <button class="tool" id="spray-tool" title="Spray Paint">
+                        <span class="tool-icon" style="background-position: -128px 0;"></span>
+                    </button>
+                    <button class="tool" id="text-tool" title="Text">
+                        <span class="tool-icon" style="background-position: -144px 0;"></span>
+                    </button>
+                    <button class="tool" id="line-tool" title="Line">
+                        <span class="tool-icon" style="background-position: -160px 0;"></span>
+                    </button>
+                    <button class="tool" id="curve-tool" title="Curve">
+                        <span class="tool-icon" style="background-position: -176px 0;"></span>
+                    </button>
+                    <button class="tool" id="rectangle-tool" title="Rectangle">
+                        <span class="tool-icon" style="background-position: -192px 0;"></span>
+                    </button>
+                    <button class="tool" id="circle-tool" title="Circle">
+                        <span class="tool-icon" style="background-position: -224px 0;"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="canvas-and-colors">
+                <div class="canvas-container">
+                    <div class="canvas-wrapper">
+                        <canvas id="paint-canvas" width="600" height="400"></canvas>
+                        <canvas id="overlay-canvas" width="600" height="400"></canvas>
+                    </div>
+                </div>
+                <div class="color-palette">
+                    <div class="color-row">
+                        <div class="color active" style="background-color: black;" data-color="black"></div>
+                        <div class="color" style="background-color: white;" data-color="white"></div>
+                        <div class="color" style="background-color: #7F7F7F;" data-color="#7F7F7F"></div>
+                        <div class="color" style="background-color: #C0C0C0;" data-color="#C0C0C0"></div>
+                        <div class="color" style="background-color: #800000;" data-color="#800000"></div>
+                        <div class="color" style="background-color: #FF0000;" data-color="#FF0000"></div>
+                        <div class="color" style="background-color: #808000;" data-color="#808000"></div>
+                        <div class="color" style="background-color: #FFFF00;" data-color="#FFFF00"></div>
+                    </div>
+                    <div class="color-row">
+                        <div class="color" style="background-color: #008000;" data-color="#008000"></div>
+                        <div class="color" style="background-color: #00FF00;" data-color="#00FF00"></div>
+                        <div class="color" style="background-color: #008080;" data-color="#008080"></div>
+                        <div class="color" style="background-color: #00FFFF;" data-color="#00FFFF"></div>
+                        <div class="color" style="background-color: #000080;" data-color="#000080"></div>
+                        <div class="color" style="background-color: #0000FF;" data-color="#0000FF"></div>
+                        <div class="color" style="background-color: #800080;" data-color="#800080"></div>
+                        <div class="color" style="background-color: #FF00FF;" data-color="#FF00FF"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="status-bar">
+            <span id="coordinates">0,0 px</span>
+            <span id="selection-info" class="selection-info"></span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('paint-canvas');
+            const ctx = canvas.getContext('2d');
+            const overlayCanvas = document.getElementById('overlay-canvas');
+            const overlayCtx = overlayCanvas.getContext('2d');
+            const coordinates = document.getElementById('coordinates');
+            const selectionInfo = document.getElementById('selection-info');
+            
+            // Make the context pixelated
+            ctx.imageSmoothingEnabled = false;
+            overlayCtx.imageSmoothingEnabled = false;
+            
+            // Set the display size (CSS pixels)
+            canvas.style.width = canvas.width + 'px';
+            canvas.style.height = canvas.height + 'px';
+            overlayCanvas.style.width = canvas.width + 'px';
+            overlayCanvas.style.height = canvas.height + 'px';
+            
+            // Load the cover image from cover.png and draw it on the canvas
+            const coverImage = new Image();
+            coverImage.src = 'cover.png';
+            coverImage.onload = function() {
+                ctx.drawImage(coverImage, 0, 0, canvas.width, canvas.height);
+            };
+            
+            // Default settings
+            let currentTool = 'pencil-tool';
+            let currentColor = 'black';
+            let isDrawing = false;
+            let lastX = 0;
+            let lastY = 0;
+            let startX = 0;
+            let startY = 0;
+            
+            // Curve tool variables
+            let curvePoints = [];
+            let curveStep = 0; // 0: setting start point, 1: setting control point, 2: setting end point
+            
+            // Menu interactions
+            const menuItems = document.querySelectorAll('.menu-item');
+            const fileMenu = document.getElementById('file-menu');
+            const fileDropdown = document.getElementById('file-dropdown');
+            
+            // Handle File menu click
+            fileMenu.addEventListener('click', function(e) {
+                e.stopPropagation();
+                fileDropdown.style.display = fileDropdown.style.display === 'block' ? 'none' : 'block';
+            });
+            
+            // Close dropdown when clicking elsewhere
+            document.addEventListener('click', function() {
+                fileDropdown.style.display = 'none';
+            });
+            
+            // Handle dropdown menu items
+            const dropdownItems = document.querySelectorAll('.dropdown-menu-item');
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    fileDropdown.style.display = 'none';
+                    // Just close the dropdown without alert
+                });
+            });
+            
+            // Handle other menu items
+            menuItems.forEach(item => {
+                if (item.id !== 'file-menu') {
+                    item.addEventListener('click', function() {
+                        fileDropdown.style.display = 'none'; // Close file dropdown if open
+                        // No alert, just visual feedback
+                    });
+                }
+            });
+            
+            // Selection variables
+            let hasSelection = false;
+            let selectionData = null; // ImageData of the selection
+            let selectionOriginalData = null; // Original ImageData from the selection area
+            let selectionOriginalRect = null; // Original rectangle position
+            let selectionRect = { x: 0, y: 0, width: 0, height: 0 };
+            let freeformPoints = []; // For free-form selection
+            let isMovingSelection = false;
+            let hasMovedSelection = false; // Flag to check if selection has been moved
+            let moveOffsetX = 0;
+            let moveOffsetY = 0;
+            let isSelectingRect = false; // Flag for rectangle selection in progress
+            let isSelectingFree = false; // Flag for free-form selection in progress
+            
+            // Key states
+            let isCtrlPressed = false;
+            window.addEventListener('keydown', function(e) {
+                if (e.key === 'Control') isCtrlPressed = true;
+                
+                // Handle copy/cut/paste of selection
+                if (isCtrlPressed && hasSelection) {
+                    if (e.key === 'c') { // Copy
+                        // Selection already stored in selectionData
+                    } else if (e.key === 'x') { // Cut
+                        // Clear the selection area on the main canvas
+                        ctx.fillStyle = 'white';
+                        ctx.fillRect(selectionRect.x, selectionRect.y, selectionRect.width, selectionRect.height);
+                    } else if (e.key === 'v') { // Paste
+                        // Selection is already active and can be placed
+                    }
+                }
+                
+                // Escape key to cancel selection
+                if (e.key === 'Escape' && hasSelection) {
+                    // Restore the original canvas under the selection
+                    if (selectionOriginalData && selectionOriginalRect) {
+                        ctx.putImageData(selectionOriginalData, selectionOriginalRect.x, selectionOriginalRect.y);
+                    }
+                    clearSelection();
+                }
+            });
+            
+            window.addEventListener('keyup', function(e) {
+                if (e.key === 'Control') isCtrlPressed = false;
+            });
+            
+            // Tool buttons
+            const toolButtons = document.querySelectorAll('.tool');
+            toolButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Apply selection before switching tools
+                    if (hasSelection && !this.id.includes('select')) {
+                        applySelection();
+                    }
+                    
+                    // Remove active class from all tools
+                    toolButtons.forEach(btn => btn.classList.remove('active'));
+                    // Add active class to clicked tool
+                    this.classList.add('active');
+                    currentTool = this.id;
+                });
+            });
+            
+            // Color palette
+            const colorButtons = document.querySelectorAll('.color');
+            colorButtons.forEach(color => {
+                color.addEventListener('click', function() {
+                    // Remove active class from all colors
+                    colorButtons.forEach(btn => btn.classList.remove('active'));
+                    // Add active class to clicked color
+                    this.classList.add('active');
+                    currentColor = this.getAttribute('data-color');
+                });
+            });
+            
+            // Track mouse coordinates
+            canvas.addEventListener('mousemove', function(e) {
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                const x = Math.floor((e.clientX - rect.left) * scaleX);
+                const y = Math.floor((e.clientY - rect.top) * scaleY);
+                coordinates.textContent = `${x},${y} px`;
+                
+                // Handle selection movement
+                if (hasSelection && isMovingSelection) {
+                    // Calculate new position while keeping the selection within canvas bounds
+                    let newX = x - moveOffsetX;
+                    let newY = y - moveOffsetY;
+                    
+                    // Keep selection within canvas bounds
+                    newX = Math.max(0, Math.min(newX, canvas.width - selectionRect.width));
+                    newY = Math.max(0, Math.min(newY, canvas.height - selectionRect.height));
+                    
+                    // Update the selection rectangle position
+                    selectionRect.x = newX;
+                    selectionRect.y = newY;
+                    
+                    // Redraw the selection on the overlay
+                    overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+                    
+                    // If we have selection data, draw it at the new position
+                    if (selectionData) {
+                        overlayCtx.putImageData(selectionData, selectionRect.x, selectionRect.y);
+                    }
+                    
+                    // Draw the selection outline
+                    drawSelectionOutline();
+                    
+                    // Mark that the selection has been moved
+                    hasMovedSelection = true;
+                }
+                else if (isSelectingRect) {
+                    // Update rectangle selection
+                    selectionRect.width = x - selectionRect.x;
+                    selectionRect.height = y - selectionRect.y;
+                    
+                    // Draw the selection rectangle on the overlay
+                    overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+                    overlayCtx.strokeStyle = 'black';
+                    overlayCtx.setLineDash([5, 5]);
+                    overlayCtx.strokeRect(selectionRect.x, selectionRect.y, selectionRect.width, selectionRect.height);
+                    
+                    // Show selection dimensions
+                    selectionInfo.textContent = `Selection: ${Math.abs(selectionRect.width)}x${Math.abs(selectionRect.height)}`;
+                }
+                else if (isSelectingFree) {
+                    // Add point to free-form selection
+                    freeformPoints.push({ x, y });
+                    
+                    // Draw the free-form selection on the overlay
+                    overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+                    overlayCtx.strokeStyle = 'black';
+                    overlayCtx.setLineDash([5, 5]);
+                    overlayCtx.beginPath();
+                    overlayCtx.moveTo(freeformPoints[0].x, freeformPoints[0].y);
+                    for (let i = 1; i < freeformPoints.length; i++) {
+                        overlayCtx.lineTo(freeformPoints[i].x, freeformPoints[i].y);
+                    }
+                    overlayCtx.stroke();
+                }
+                // Preview for curve tool
+                else if (currentTool === 'curve-tool') {
+                    if (curveStep === 1) {
+                        // Preview line between start point and current mouse position
+                        overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+                        
+                        // Draw straight line
+                        overlayCtx.strokeStyle = currentColor;
+                        overlayCtx.beginPath();
+                        overlayCtx.moveTo(curvePoints[0].x, curvePoints[0].y);
+                        overlayCtx.lineTo(x, y);
+                        overlayCtx.stroke();
+                        
+                        // Draw points
+                        overlayCtx.fillStyle = currentColor;
+                        overlayCtx.fillRect(curvePoints[0].x - 1, curvePoints[0].y - 1, 3, 3);
+                        overlayCtx.fillRect(x - 1, y - 1, 3, 3);
+                    }
+                    else if (curveStep === 2) {
+                        // Preview curve with current mouse position as endpoint
+                        overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+                        
+                        // Draw guide lines
+                        overlayCtx.strokeStyle = '#888888';
+                        overlayCtx.setLineDash([2, 2]);
+                        overlayCtx.beginPath();
+                        overlayCtx.moveTo(curvePoints[0].x, curvePoints[0].y);
+                        overlayCtx.lineTo(curvePoints[1].x, curvePoints[1].y);
+                        overlayCtx.lineTo(x, y);
+                        overlayCtx.stroke();
+                        overlayCtx.setLineDash([]);
+                        
+                        // Draw preview curve
+                        overlayCtx.strokeStyle = currentColor;
+                        overlayCtx.beginPath();
+                        overlayCtx.moveTo(curvePoints[0].x, curvePoints[0].y);
+                        overlayCtx.quadraticCurveTo(
+                            curvePoints[1].x, curvePoints[1].y,
+                            x, y
+                        );
+                        overlayCtx.stroke();
+                        
+                        // Draw points
+                        overlayCtx.fillStyle = currentColor;
+                        overlayCtx.fillRect(curvePoints[0].x - 1, curvePoints[0].y - 1, 3, 3);
+                        overlayCtx.fillRect(curvePoints[1].x - 1, curvePoints[1].y - 1, 3, 3);
+                        overlayCtx.fillRect(x - 1, y - 1, 3, 3);
+                    }
+                }
+            });
+            
+            // Mouse events for drawing
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+            
+            function startDrawing(e) {
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                
+                startX = Math.floor((e.clientX - rect.left) * scaleX);
+                startY = Math.floor((e.clientY - rect.top) * scaleY);
+                
+                lastX = startX;
+                lastY = startY;
+                isDrawing = true;
+                
+                // Check if we're clicking inside an existing selection
+                if (hasSelection && 
+                    startX >= selectionRect.x && startX <= selectionRect.x + selectionRect.width &&
+                    startY >= selectionRect.y && startY <= selectionRect.y + selectionRect.height) {
+                    
+                    isMovingSelection = true;
+                    hasMovedSelection = false; // Reset moved flag
+                    moveOffsetX = startX - selectionRect.x;
+                    moveOffsetY = startY - selectionRect.y;
+                    
+                    // Store the original position of the selection if not already stored
+                    if (!selectionOriginalRect) {
+                        selectionOriginalRect = { ...selectionRect };
+                    }
+                    
+                    // When starting to move, draw white on the canvas where the selection was
+                    if (selectionOriginalData) {
+                        // Clear the area with white (or we could use the canvas background color)
+                        ctx.fillStyle = 'white';
+                        ctx.fillRect(
+                            selectionOriginalRect.x, 
+                            selectionOriginalRect.y, 
+                            selectionOriginalRect.width, 
+                            selectionOriginalRect.height
+                        );
+                    }
+                    
+                    return;
+                }
+                
+                // If we had a selection and clicked outside, apply it
+                if (hasSelection && !isMovingSelection && 
+                    !(currentTool === 'select-rect-tool' || currentTool === 'select-free-tool')) {
+                    applySelection();
+                }
+                
+                // Handle different tools
+                if (currentTool === 'select-rect-tool') {
+                    // Start rectangle selection - clear any existing selection
+                    clearSelection();
+                    selectionRect = { x: startX, y: startY, width: 0, height: 0 };
+                    isSelectingRect = true;
+                }
+                else if (currentTool === 'select-free-tool') {
+                    // Start free-form selection - clear any existing selection
+                    clearSelection();
+                    freeformPoints = [{ x: startX, y: startY }];
+                    isSelectingFree = true;
+                }
+                else if (currentTool === 'pencil-tool') {
+                    ctx.fillStyle = currentColor;
+                    ctx.fillRect(startX, startY, 1, 1);
+                } 
+                else if (currentTool === 'brush-tool') {
+                    ctx.fillStyle = currentColor;
+                    // Draw a larger rectangle for the brush
+                    const brushSize = 3;
+                    ctx.fillRect(startX - Math.floor(brushSize/2), startY - Math.floor(brushSize/2), brushSize, brushSize);
+                } 
+                else if (currentTool === 'spray-tool') {
+                    sprayPaint(startX, startY);
+                }
+                else if (currentTool === 'eraser-tool') {
+                    ctx.fillStyle = 'white';
+                    const eraserSize = 5;
+                    ctx.fillRect(startX - Math.floor(eraserSize/2), startY - Math.floor(eraserSize/2), eraserSize, eraserSize);
+                } 
+                else if (currentTool === 'fill-tool') {
+                    // Get the color of the pixel clicked on
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const targetColor = getPixelColor(imageData, startX, startY);
+                    
+                    // Don't fill if target color is the same as fill color
+                    const fillColorRGB = hexToRgb(currentColor);
+                    if (colorsMatch(targetColor, fillColorRGB)) {
+                        return;
+                    }
+                    
+                    // Flood fill from the starting point
+                    floodFill(imageData, startX, startY, targetColor, fillColorRGB);
+                    ctx.putImageData(imageData, 0, 0);
+                }
+                else if (currentTool === 'curve-tool') {
+                    // Handle curve drawing in steps
+                    if (curveStep === 0) {
+                        // First click - set starting point
+                        curvePoints = [{ x: startX, y: startY }];
+                        curveStep = 1;
+                        
+                        // Show a small point on the overlay to mark starting point
+                        overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+                        overlayCtx.fillStyle = currentColor;
+                        overlayCtx.fillRect(startX - 1, startY - 1, 3, 3);
+                        
+                        isDrawing = false; // Don't continue drawing yet
+                    } 
+                    else if (curveStep === 1) {
+                        // Second click - add control point
+                        curvePoints.push({ x: startX, y: startY });
+                        curveStep = 2;
+                        
+                        // Show the straight line from start to control point on overlay
+                        overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+                        overlayCtx.strokeStyle = currentColor;
+                        overlayCtx.beginPath();
+                        overlayCtx.moveTo(curvePoints[0].x, curvePoints[0].y);
+                        overlayCtx.lineTo(curvePoints[1].x, curvePoints[1].y);
+                        overlayCtx.stroke();
+                        
+                        // Draw points at start and control point
+                        overlayCtx.fillStyle = currentColor;
+                        overlayCtx.fillRect(curvePoints[0].x - 1, curvePoints[0].y - 1, 3, 3);
+                        overlayCtx.fillRect(curvePoints[1].x - 1, curvePoints[1].y - 1, 3, 3);
+                        
+                        isDrawing = false; // Don't continue drawing yet
+                    } 
+                    else if (curveStep === 2) {
+                        // Third click - add end point and draw final curve
+                        curvePoints.push({ x: startX, y: startY });
+                        
+                        // Draw the quadratic curve on the main canvas
+                        drawQuadraticCurve(
+                            curvePoints[0].x, curvePoints[0].y, 
+                            curvePoints[1].x, curvePoints[1].y, 
+                            curvePoints[2].x, curvePoints[2].y
+                        );
+                        
+                        // Clear overlay
+                        overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+                        
+                        // Reset curve state
+                        curvePoints = [];
+                        curveStep = 0;
+                        isDrawing = false;
+                    }
+                }
+            }
+            
+            function draw(e) {
+                if (!isDrawing) return;
+                
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                let x = Math.floor((e.clientX - rect.left) * scaleX);
+                let y = Math.floor((e.clientY - rect.top) * scaleY);
+                
+                if (isMovingSelection) {
+                    // Movement is handled in the mousemove event listener
+                    return;
+                }
+                
+                if (x === lastX && y === lastY) return; // No movement
+                
+                if (currentTool === 'pencil-tool') {
+                    // Draw a single pixel line
+                    drawLine(lastX, lastY, x, y, currentColor, 1);
+                } 
+                else if (currentTool === 'brush-tool') {
+                    // Thicker brush
+                    drawLine(lastX, lastY, x, y, currentColor, 3);
+                }
+                else if (currentTool === 'spray-tool') {
+                    // Apply spray at current position
+                    sprayPaint(x, y);
+                }
+                else if (currentTool === 'eraser-tool') {
+                    // Eraser - even larger
+                    drawLine(lastX, lastY, x, y, 'white', 5);
+                }
+                
+                lastX = x;
+                lastY = y;
+            }
+            
+            function stopDrawing(e) {
+                if (!isDrawing) return;
+                
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                const x = Math.floor((e.clientX - rect.left) * scaleX);
+                const y = Math.floor((e.clientY - rect.top) * scaleY);
+                
+                const endX = x;
+                const endY = y;
+                
+                // Handle moving selection
+                if (isMovingSelection) {
+                    isMovingSelection = false;
+                    // If we didn't actually move the selection, don't do anything
+                    if (!hasMovedSelection) {
+                        return;
+                    }
+                    hasMovedSelection = false;
+                    return;
+                }
+                
+                // Handle selection tools
+                if (isSelectingRect) {
+                    isSelectingRect = false;
+                    
+                    // Normalize the selection rectangle (handle negative width/height)
+                    normalizeSelectionRect();
+                    
+                    // Create a selection from the rectangle
+                    captureSelection();
+                }
+                else if (isSelectingFree) {
+                    isSelectingFree = false;
+                    
+                    // Close the free-form path
+                    freeformPoints.push(freeformPoints[0]); // Close the path
+                    
+                    // Calculate the bounding rectangle of the free-form selection
+                    let minX = Infinity, minY = Infinity, maxX = 0, maxY = 0;
+                    for (const point of freeformPoints) {
+                        minX = Math.min(minX, point.x);
+                        minY = Math.min(minY, point.y);
+                        maxX = Math.max(maxX, point.x);
+                        maxY = Math.max(maxY, point.y);
+                    }
+                    
+                    selectionRect = {
+                        x: minX,
+                        y: minY,
+                        width: maxX - minX,
+                        height: maxY - minY
+                    };
+                    
+                    // Create a selection from the free-form path
+                    captureFreeformSelection();
+                }
+                else if (currentTool === 'line-tool') {
+                    drawLine(startX, startY, endX, endY, currentColor, 1);
+                } 
+                else if (currentTool === 'rectangle-tool') {
+                    drawRect(startX, startY, endX, endY);
+                } 
+                else if (currentTool === 'circle-tool') {
+                    drawCircle(startX, startY, endX, endY);
+                } 
+                else if (currentTool === 'text-tool') {
+                    // Simple text for retro look - just "A"
+                    ctx.fillStyle = currentColor;
+                    const pixelA = [
+                        [0,0,1,0,0],
+                        [0,1,0,1,0],
+                        [1,1,1,1,1],
+                        [1,0,0,0,1],
+                        [1,0,0,0,1]
+                    ];
+                    
+                    for (let py = 0; py < pixelA.length; py++) {
+                        for (let px = 0; px < pixelA[py].length; px++) {
+                            if (pixelA[py][px] === 1) {
+                                ctx.fillRect(
+                                    startX + px, 
+                                    startY + py, 
+                                    1, 
+                                    1
+                                );
+                            }
+                        }
+                    }
+                }
+                
+                isDrawing = false;
+            }
+            
+            // Normalize the selection rectangle to handle negative width/height
+            function normalizeSelectionRect() {
+                if (selectionRect.width < 0) {
+                    selectionRect.x += selectionRect.width;
+                    selectionRect.width = Math.abs(selectionRect.width);
+                }
+                if (selectionRect.height < 0) {
+                    selectionRect.y += selectionRect.height;
+                    selectionRect.height = Math.abs(selectionRect.height);
+                }
+            }
+            
+            // Capture the selection from the canvas
+            function captureSelection() {
+                // Make sure selection has positive dimensions
+                if (selectionRect.width <= 0 || selectionRect.height <= 0) {
+                    clearSelection();
+                    return;
+                }
+                
+                // Store the original position
+                selectionOriginalRect = { ...selectionRect };
+                
+                // Save the original data before capturing selection
+                selectionOriginalData = ctx.getImageData(
+                    selectionRect.x, selectionRect.y, 
+                    selectionRect.width, selectionRect.height
+                );
+                
+                // Store the selection from the canvas
+                selectionData = ctx.getImageData(
+                    selectionRect.x, selectionRect.y, 
+                    selectionRect.width, selectionRect.height
+                );
+                
+                // Draw selection on overlay
+                overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+                overlayCtx.putImageData(selectionData, selectionRect.x, selectionRect.y);
+                drawSelectionOutline();
+                
+                hasSelection = true;
+                
+                // Update selection info
+                selectionInfo.textContent = `Selection: ${selectionRect.width}x${selectionRect.height}`;
+            }
+            
+            // Capture free-form selection
+            function captureFreeformSelection() {
+                // Create a temporary canvas to handle the complex shape
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = canvas.width;
+                tempCanvas.height = canvas.height;
+                const tempCtx = tempCanvas.getContext('2d');
+                
+                // Draw the free-form shape as a mask
+                tempCtx.fillStyle = 'white';
+                tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+                tempCtx.fillStyle = 'black';
+                tempCtx.beginPath();
+                tempCtx.moveTo(freeformPoints[0].x, freeformPoints[0].y);
+                for (let i = 1; i < freeformPoints.length; i++) {
+                    tempCtx.lineTo(freeformPoints[i].x, freeformPoints[i].y);
+                }
+                tempCtx.fill();
+                
+                // Store the original position
+                selectionOriginalRect = { ...selectionRect };
+                
+                // Save the original data before capturing selection
+                selectionOriginalData = ctx.getImageData(
+                    selectionRect.x, selectionRect.y, 
+                    selectionRect.width, selectionRect.height
+                );
+                
+                // Get the selection from the canvas
+                const fullImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const maskImageData = tempCtx.getImageData(
+                    selectionRect.x, selectionRect.y, 
+                    selectionRect.width, selectionRect.height
+                );
+                
+                // Create a new image data for the selection
+                selectionData = ctx.createImageData(selectionRect.width, selectionRect.height);
+                
+                // Copy pixels only inside the free-form shape
+                for (let y = 0; y < selectionRect.height; y++) {
+                    for (let x = 0; x < selectionRect.width; x++) {
+                        const maskIndex = (y * selectionRect.width + x) * 4;
+                        const canvasIndex = ((y + selectionRect.y) * canvas.width + (x + selectionRect.x)) * 4;
+                        const selectionIndex = (y * selectionRect.width + x) * 4;
+                        
+                        // Check if the pixel is inside the mask (black)
+                        if (maskImageData.data[maskIndex] === 0) {
+                            // Copy pixel from canvas to selection
+                            selectionData.data[selectionIndex] = fullImageData.data[canvasIndex];
+                            selectionData.data[selectionIndex + 1] = fullImageData.data[canvasIndex + 1];
+                            selectionData.data[selectionIndex + 2] = fullImageData.data[canvasIndex + 2];
+                            selectionData.data[selectionIndex + 3] = fullImageData.data[canvasIndex + 3];
+                        } else {
+                            // Outside selection - make transparent
+                            selectionData.data[selectionIndex + 3] = 0;
+                        }
+                    }
+                }
+                
+                // Draw selection on overlay
+                overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+                overlayCtx.putImageData(selectionData, selectionRect.x, selectionRect.y);
+                drawSelectionOutline();
+                
+                hasSelection = true;
+                
+                // Update selection info
+                selectionInfo.textContent = `Selection: ${selectionRect.width}x${selectionRect.height}`;
+            }
+            
+            // Draw the selection outline
+            function drawSelectionOutline() {
+                overlayCtx.strokeStyle = 'black';
+                overlayCtx.setLineDash([5, 5]);
+                overlayCtx.lineWidth = 1;
+                overlayCtx.strokeRect(
+                    selectionRect.x, selectionRect.y, 
+                    selectionRect.width, selectionRect.height
+                );
+            }
+            
+            // Apply the current selection to the canvas
+            function applySelection() {
+                if (!hasSelection || !selectionData) return;
+                
+                // Draw the selection on the main canvas
+                ctx.putImageData(selectionData, selectionRect.x, selectionRect.y);
+                
+                // Clear the selection
+                clearSelection();
+            }
+            
+            // Clear the current selection
+            function clearSelection() {
+                hasSelection = false;
+                selectionData = null;
+                selectionOriginalData = null;
+                selectionOriginalRect = null;
+                selectionRect = { x: 0, y: 0, width: 0, height: 0 };
+                freeformPoints = [];
+                overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+                selectionInfo.textContent = '';
+                isMovingSelection = false;
+                isSelectingRect = false;
+                isSelectingFree = false;
+            }
+            
+            // Bresenham's line algorithm for smooth 1px lines
+            function drawLine(x0, y0, x1, y1, color, thickness) {
+                ctx.fillStyle = color;
+                
+                // For thicker lines, we need to draw multiple lines
+                if (thickness === 1) {
+                    // Simple Bresenham for 1px lines
+                    const dx = Math.abs(x1 - x0);
+                    const dy = Math.abs(y1 - y0);
+                    const sx = (x0 < x1) ? 1 : -1;
+                    const sy = (y0 < y1) ? 1 : -1;
+                    let err = dx - dy;
+                    
+                    while (true) {
+                        ctx.fillRect(x0, y0, 1, 1);
+                        
+                        if (x0 === x1 && y0 === y1) break;
+                        
+                        const e2 = 2 * err;
+                        if (e2 > -dy) {
+                            err -= dy;
+                            x0 += sx;
+                        }
+                        if (e2 < dx) {
+                            err += dx;
+                            y0 += sy;
+                        }
+                    }
+                } else {
+                    // For thicker lines, use an approach that works better
+                    const dist = Math.sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
+                    const steps = Math.max(Math.abs(x1 - x0), Math.abs(y1 - y0));
+                    
+                    for (let i = 0; i <= steps; i++) {
+                        const t = (steps === 0) ? 0 : i / steps;
+                        const x = Math.round(x0 + t * (x1 - x0));
+                        const y = Math.round(y0 + t * (y1 - y0));
+                        
+                        // Draw a "dot" of the appropriate thickness
+                        const halfThick = Math.floor(thickness / 2);
+                        for (let ox = -halfThick; ox <= halfThick; ox++) {
+                            for (let oy = -halfThick; oy <= halfThick; oy++) {
+                                // Only draw pixels that are within thickness radius
+                                if (ox*ox + oy*oy <= halfThick*halfThick) {
+                                    const px = x + ox;
+                                    const py = y + oy;
+                                    // Check bounds
+                                    if (px >= 0 && px < canvas.width && py >= 0 && py < canvas.height) {
+                                        ctx.fillRect(px, py, 1, 1);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            function drawRect(x0, y0, x1, y1) {
+                // Ensure x0,y0 is top-left and x1,y1 is bottom-right
+                const left = Math.min(x0, x1);
+                const top = Math.min(y0, y1);
+                const right = Math.max(x0, x1);
+                const bottom = Math.max(y0, y1);
+                
+                ctx.fillStyle = currentColor;
+                
+                // Draw horizontal lines
+                drawLine(left, top, right, top, currentColor, 1);
+                drawLine(left, bottom, right, bottom, currentColor, 1);
+                
+                // Draw vertical lines
+                drawLine(left, top, left, bottom, currentColor, 1);
+                drawLine(right, top, right, bottom, currentColor, 1);
+            }
+            
+            function drawCircle(x0, y0, x1, y1) {
+                // Calculate radius
+                const dx = x1 - x0;
+                const dy = y1 - y0;
+                const radius = Math.sqrt(dx*dx + dy*dy);
+                
+                ctx.fillStyle = currentColor;
+                
+                // Midpoint circle algorithm 
+                let x = radius;
+                let y = 0;
+                let err = 0;
+                
+                while (x >= y) {
+                    ctx.fillRect(x0 + x, y0 + y, 1, 1);
+                    ctx.fillRect(x0 + y, y0 + x, 1, 1);
+                    ctx.fillRect(x0 - y, y0 + x, 1, 1);
+                    ctx.fillRect(x0 - x, y0 + y, 1, 1);
+                    ctx.fillRect(x0 - x, y0 - y, 1, 1);
+                    ctx.fillRect(x0 - y, y0 - x, 1, 1);
+                    ctx.fillRect(x0 + y, y0 - x, 1, 1);
+                    ctx.fillRect(x0 + x, y0 - y, 1, 1);
+                    
+                    y++;
+                    if (err <= 0) {
+                        err += 2 * y + 1;
+                    }
+                    if (err > 0) {
+                        x--;
+                        err -= 2 * x + 1;
+                    }
+                }
+            }
+            
+            // Flood fill algorithm implementation
+            function floodFill(imageData, x, y, targetColor, fillColor) {
+                const width = imageData.width;
+                const height = imageData.height;
+                const stack = [{x, y}]; // Start with the target pixel
+                const pixelSeen = new Set(); // Track visited pixels
+                
+                // Check if the point is on the canvas
+                function isValidPoint(px, py) {
+                    return px >= 0 && px < width && py >= 0 && py < height;
+                }
+                
+                // Process pixels while we have them in the stack
+                while (stack.length > 0) {
+                    const current = stack.pop();
+                    const cx = current.x;
+                    const cy = current.y;
+                    
+                    // Skip if we've seen this pixel or if it's out of bounds
+                    const key = `${cx},${cy}`;
+                    if (pixelSeen.has(key) || !isValidPoint(cx, cy)) {
+                        continue;
+                    }
+                    
+                    // Check if this pixel has the target color
+                    const currentColor = getPixelColor(imageData, cx, cy);
+                    if (!colorsMatch(currentColor, targetColor)) {
+                        continue;
+                    }
+                    
+                    // Set the color of this pixel
+                    setPixelColor(imageData, cx, cy, fillColor);
+                    pixelSeen.add(key);
+                    
+                    // Add 4-connected neighbors to the stack
+                    stack.push({x: cx + 1, y: cy});
+                    stack.push({x: cx - 1, y: cy});
+                    stack.push({x: cx, y: cy + 1});
+                    stack.push({x: cx, y: cy - 1});
+                }
+            }
+            
+            // Get the color of a pixel as an RGBA array
+            function getPixelColor(imageData, x, y) {
+                const index = (y * imageData.width + x) * 4;
+                return {
+                    r: imageData.data[index],
+                    g: imageData.data[index + 1],
+                    b: imageData.data[index + 2],
+                    a: imageData.data[index + 3]
+                };
+            }
+            
+            // Set the color of a pixel
+            function setPixelColor(imageData, x, y, color) {
+                const index = (y * imageData.width + x) * 4;
+                imageData.data[index] = color.r;
+                imageData.data[index + 1] = color.g;
+                imageData.data[index + 2] = color.b;
+                imageData.data[index + 3] = 255; // fully opaque
+            }
+            
+            // Check if two colors match (with small tolerance for anti-aliasing)
+            function colorsMatch(color1, color2) {
+                const tolerance = 10; // Tolerance for color matching
+                return Math.abs(color1.r - color2.r) <= tolerance &&
+                       Math.abs(color1.g - color2.g) <= tolerance &&
+                       Math.abs(color1.b - color2.b) <= tolerance;
+            }
+            
+            // Convert hex color to RGB
+            function hexToRgb(hex) {
+                // Handle shorthand and standard hex formats
+                let r, g, b;
+                
+                // Default to black if hex isn't provided or is invalid
+                if (!hex || typeof hex !== 'string') {
+                    return { r: 0, g: 0, b: 0, a: 255 };
+                }
+                
+                // Remove the hash if it exists
+                hex = hex.replace(/^#/, '');
+                
+                // Handle named CSS colors
+                const namedColors = {
+                    black: { r: 0, g: 0, b: 0 },
+                    white: { r: 255, g: 255, b: 255 },
+                    red: { r: 255, g: 0, b: 0 },
+                    green: { r: 0, g: 128, b: 0 },
+                    blue: { r: 0, g: 0, b: 255 },
+                    yellow: { r: 255, g: 255, b: 0 },
+                    purple: { r: 128, g: 0, b: 128 },
+                    orange: { r: 255, g: 165, b: 0 },
+                    pink: { r: 255, g: 192, b: 203 },
+                    brown: { r: 165, g: 42, b: 42 }
+                };
+                
+                if (namedColors[hex]) {
+                    return { ...namedColors[hex], a: 255 };
+                }
+                
+                // Parse the hex value
+                if (hex.length === 3) {
+                    r = parseInt(hex[0] + hex[0], 16);
+                    g = parseInt(hex[1] + hex[1], 16);
+                    b = parseInt(hex[2] + hex[2], 16);
+                } else if (hex.length === 6) {
+                    r = parseInt(hex.substring(0, 2), 16);
+                    g = parseInt(hex.substring(2, 4), 16);
+                    b = parseInt(hex.substring(4, 6), 16);
+                } else {
+                    // Invalid hex, return black
+                    r = 0;
+                    g = 0;
+                    b = 0;
+                }
+                
+                return { r, g, b, a: 255 };
+            }
+            
+            // Spray paint function
+            function sprayPaint(x, y) {
+                // Set up spray parameters
+                const density = 15; // Number of dots per spray
+                const radius = 8;   // Spray radius
+                
+                ctx.fillStyle = currentColor;
+                
+                // Generate random dots within the circular spray area
+                for (let i = 0; i < density; i++) {
+                    // Generate random position within the circle using polar coordinates
+                    const angle = Math.random() * 2 * Math.PI; // Random angle
+                    const sprayRadius = Math.random() * radius; // Random radius
+                    
+                    // Convert to Cartesian coordinates
+                    const dx = Math.round(sprayRadius * Math.cos(angle));
+                    const dy = Math.round(sprayRadius * Math.sin(angle));
+                    
+                    // Calculate position and make sure it's within canvas bounds
+                    const px = x + dx;
+                    const py = y + dy;
+                    
+                    // Only draw if the point is within the canvas
+                    if (px >= 0 && px < canvas.width && py >= 0 && py < canvas.height) {
+                        // Draw a single pixel
+                        ctx.fillRect(px, py, 1, 1);
+                    }
+                }
+            }
+            
+            // Draw a pixel-perfect quadratic curve (x0,y0) is start, (x1,y1) is control, (x2,y2) is end
+            function drawQuadraticCurve(x0, y0, x1, y1, x2, y2) {
+                ctx.fillStyle = currentColor;
+                
+                // Number of segments to divide the curve into (more = smoother)
+                const numSegments = Math.max(
+                    20,
+                    // Calculate distance to ensure enough points on longer curves
+                    Math.ceil(Math.sqrt(
+                        Math.pow(x2 - x0, 2) + 
+                        Math.pow(y2 - y0, 2) +
+                        Math.pow(x1 - x0, 2) + 
+                        Math.pow(y1 - y0, 2)
+                    ))
+                );
+                
+                let prevX = x0;
+                let prevY = y0;
+                
+                // Start with the first point
+                ctx.fillRect(prevX, prevY, 1, 1);
+                
+                // Calculate points along the curve and draw lines between them
+                for (let i = 1; i <= numSegments; i++) {
+                    // Parameter t goes from 0 to 1
+                    const t = i / numSegments;
+                    
+                    // Quadratic Bezier formula
+                    const x = Math.round((1 - t) * (1 - t) * x0 + 2 * (1 - t) * t * x1 + t * t * x2);
+                    const y = Math.round((1 - t) * (1 - t) * y0 + 2 * (1 - t) * t * y1 + t * t * y2);
+                    
+                    // Only draw a line if the pixel coordinates change (avoid excessive drawing)
+                    if (x !== prevX || y !== prevY) {
+                        // Draw a line from the previous point to this point
+                        drawLine(prevX, prevY, x, y, currentColor, 1);
+                        prevX = x;
+                        prevY = y;
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

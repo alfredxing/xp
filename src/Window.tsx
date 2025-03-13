@@ -91,7 +91,7 @@ const Window: React.FC<WindowProps> = ({ window }) => {
 	// Compute window style
 	const windowStyle: React.CSSProperties = {
 		position: 'absolute',
-		zIndex: window.zIndex,
+		zIndex: window.zIndex + 9,
 		...(window.isMaximized
 			? {
 					top: 0,
@@ -195,35 +195,40 @@ const Window: React.FC<WindowProps> = ({ window }) => {
 		>
 			{/* Titlebar */}
 			<div
-				className="window__titlebar"
+				className="window__titlebar title-bar"
 				onMouseDown={handleDragStart}
 				onDoubleClick={handleMaximizeToggle}
 			>
-				<div className="window__titlebar__title">
-					{window.icon && <span className="window__titlebar__title__icon">{window.icon}</span>}
+				<div className="window__titlebar__title title-bar-text">
+					{window.icon && <img src={window.icon} className="window__titlebar__title__icon" />}
 					{window.title}
 				</div>
-				<div className="window__titlebar__controls">
-					<div
+				<div className="window__titlebar__controls title-bar-controls">
+					<button
 						className="window__titlebar__control window__titlebar__control--minimize"
+						aria-label="Minimize"
 						onClick={handleMinimize}
 					/>
-					<div
-						className="window__titlebar__control window__titlebar__control--maximize"
-						onClick={handleMaximizeToggle}
-					/>
-					<div
+					{!window.fixedSize && (
+						<button
+							className="window__titlebar__control window__titlebar__control--maximize"
+							aria-label={window.isMaximized ? 'Restore' : 'Maximize'}
+							onClick={handleMaximizeToggle}
+						/>
+					)}
+					<button
 						className="window__titlebar__control window__titlebar__control--close"
+						aria-label="Close"
 						onClick={handleClose}
 					/>
 				</div>
 			</div>
 
 			{/* Content */}
-			<div className="window__content">{window.content}</div>
+			<div className="window__content window-body">{window.content}</div>
 
 			{/* Resize handles */}
-			{!window.isMaximized && (
+			{!window.isMaximized && !window.fixedSize && (
 				<>
 					{/* Right edge */}
 					<div

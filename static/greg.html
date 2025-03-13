@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="scroll.css" />
+    <script>
+      (function () {
+        const originalConsole = window.console;
+        window.console = {
+          log: (...args) => {
+            originalConsole.log(...args);
+            window.parent.postMessage({ type: 'console', message: args.join(' ') }, '*');
+          },
+          error: (...args) => {
+            originalConsole.error(...args);
+            window.parent.postMessage(
+              { type: 'console', message: 'Error: ' + args.join(' ') },
+              '*',
+            );
+          },
+          warn: (...args) => {
+            originalConsole.warn(...args);
+            window.parent.postMessage(
+              { type: 'console', message: 'Warning: ' + args.join(' ') },
+              '*',
+            );
+          },
+        };
+
+        window.addEventListener('error', (event) => {
+          window.parent.postMessage(
+            { type: 'console', message: 'Uncaught Error: ' + event.message },
+            '*',
+          );
+        });
+      })();
+    </script>
+
+    <title>FELIX'S 2 YEAR ANNIVERSARY!!!</title>
+    <style>
+      body {
+        background-color: #008080;
+        font-family: 'Comic Sans MS', cursive, sans-serif;
+        text-align: center;
+        background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 10L90 10L90 90L10 90' fill='none' stroke='%23ffffff22' stroke-width='2'/%3E%3C/svg%3E");
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border: 8px ridge #c0c0c0;
+        box-shadow: 10px 10px 5px #000000;
+      }
+      h1 {
+        color: #ff00ff;
+        font-size: 48px;
+        text-shadow: 2px 2px #ffff00;
+        animation: rainbow 3s infinite;
+        margin-top: 20px;
+      }
+      .blink {
+        animation: blinker 1s linear infinite;
+      }
+      @keyframes blinker {
+        50% {
+          opacity: 0;
+        }
+      }
+      @keyframes rainbow {
+        0% {
+          color: red;
+        }
+        14% {
+          color: orange;
+        }
+        28% {
+          color: yellow;
+        }
+        42% {
+          color: green;
+        }
+        56% {
+          color: blue;
+        }
+        70% {
+          color: indigo;
+        }
+        84% {
+          color: violet;
+        }
+        100% {
+          color: red;
+        }
+      }
+      .thumbs-up {
+        width: 300px;
+        height: 300px;
+        border: 5px dashed #ff0000;
+        margin: 20px auto;
+        background-color: #ffff00;
+        padding: 10px;
+      }
+      marquee {
+        background-color: #000000;
+        color: #00ff00;
+        font-size: 24px;
+        padding: 10px;
+        margin: 20px 0;
+      }
+      .counter {
+        font-family: 'Courier New', monospace;
+        background-color: #000000;
+        color: #ff0000;
+        padding: 5px;
+        display: inline-block;
+        margin-top: 20px;
+        border: 2px inset #808080;
+      }
+      .under-construction {
+        margin: 20px;
+      }
+      .popup {
+        display: none;
+        position: fixed;
+        background-color: #ffccff;
+        border: 3px outset #ff00ff;
+        padding: 20px;
+        box-shadow: 5px 5px 10px #000000;
+        z-index: 100;
+        width: 300px;
+        font-size: 18px;
+        color: #0000ff;
+        text-align: center;
+      }
+      .popup-button {
+        background-color: #c0c0c0;
+        border: 2px outset #808080;
+        padding: 5px 10px;
+        margin-top: 10px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+      .guestbook {
+        background-color: #ffffcc;
+        border: 2px inset #808080;
+        padding: 10px;
+        margin-top: 20px;
+        text-align: left;
+      }
+      .guestbook-entry {
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px dotted #808080;
+      }
+      hr {
+        height: 5px;
+        border: none;
+        background: repeating-linear-gradient(
+          45deg,
+          #ff0000,
+          #ff0000 10px,
+          #ffff00 10px,
+          #ffff00 20px
+        );
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <img
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
+        height="1"
+        width="1"
+        alt="spacer"
+      />
+      <h1>Happy 2 Year Anniversary, Felix!!</h1>
+      <hr />
+      <marquee scrollamount="10" behavior="alternate">
+        <span class="blink">⭐ CONGRATULATIONS FELIX! ⭐</span>
+      </marquee>
+
+      <div class="thumbs-up">
+        <img
+          src="https://ca.slack-edge.com/E063KNMBD8W-U04M6S4TR4K-018f4cab4aae-512"
+          width="280"
+          height="280"
+          alt="Guy with sunglasses giving thumbs up"
+        />
+      </div>
+
+      <marquee direction="up" height="60" scrollamount="2">Notion is SO lucky to have you!</marquee>
+
+      <div class="under-construction">
+        <img
+          src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
+          height="50"
+          width="50"
+          alt="Under Construction"
+        />
+        <br />
+        <span class="blink">SITE UNDER CONSTRUCTION</span>
+      </div>
+
+      <div class="guestbook">
+        <h3>:: GUESTBOOK ::</h3>
+        <div class="guestbook-entry">
+          <strong>Ivan:</strong> Felix is the BEST teammate ever! Happy Anniversary!
+        </div>
+        <div class="guestbook-entry">
+          <strong>Simon:</strong> 2 years of excellence! Congrats Felix!
+        </div>
+        <div class="guestbook-entry">
+          <strong>The Team:</strong> We'd be lost without you Felix! Here's to many more years!
+        </div>
+      </div>
+
+      <div class="counter">Visitor Count: 1337</div>
+    </div>
+
+    <div id="popup1" class="popup" style="top: 50px; left: 100px; display: block">
+      <strong>CONGRATULATIONS!!!</strong>
+      <p>Felix is celebrating 2 amazing years at Notion!</p>
+      <div class="popup-button" onclick="closePopup('popup1')">OK!</div>
+    </div>
+
+    <div id="popup2" class="popup" style="bottom: 100px; right: 50px; display: block">
+      <strong>WOW!</strong>
+      <p>Working with Felix is the BEST! Happy Anniversary!</p>
+      <div class="popup-button" onclick="closePopup('popup2')">AWESOME!</div>
+    </div>
+
+    <div id="popup3" class="popup" style="top: 150px; right: 150px; display: block">
+      <strong>ATTENTION!</strong>
+      <p>Notion hit the jackpot when they hired Felix!</p>
+      <div class="popup-button" onclick="closePopup('popup3')">TRUE!</div>
+    </div>
+
+    <script>
+      // Show popups with slight delay between each
+      window.onload = function () {
+        setTimeout(function () {
+          document.getElementById('popup1').style.display = 'block';
+        }, 1000);
+
+        setTimeout(function () {
+          document.getElementById('popup2').style.display = 'block';
+        }, 3000);
+
+        setTimeout(function () {
+          document.getElementById('popup3').style.display = 'block';
+        }, 5000);
+      };
+
+      function closePopup(id) {
+        document.getElementById(id).style.display = 'none';
+
+        // Create a new random popup when one is closed
+        if (Math.random() > 0.5) {
+          createRandomPopup();
+        }
+      }
+
+      function createRandomPopup() {
+        const messages = [
+          'Felix makes work fun every day!',
+          '2 years of brilliance! Way to go Felix!',
+          "Notion's MVP: Felix!",
+          'Felix brings the team to the next level!',
+          'We appreciate you Felix! Happy Anniversary!',
+        ];
+
+        const popup = document.createElement('div');
+        popup.className = 'popup';
+        popup.id = 'random-popup-' + Math.floor(Math.random() * 1000);
+        popup.style.top = Math.floor(Math.random() * 70) + '%';
+        popup.style.left = Math.floor(Math.random() * 70) + '%';
+
+        const title = document.createElement('strong');
+        title.innerText = 'HEY THERE!';
+
+        const message = document.createElement('p');
+        message.innerText = messages[Math.floor(Math.random() * messages.length)];
+
+        const button = document.createElement('div');
+        button.className = 'popup-button';
+        button.innerText = 'COOL!';
+        button.onclick = function () {
+          popup.style.display = 'none';
+        };
+
+        popup.appendChild(title);
+        popup.appendChild(message);
+        popup.appendChild(button);
+
+        document.body.appendChild(popup);
+        popup.style.display = 'block';
+      }
+    </script>
+  </body>
+</html>

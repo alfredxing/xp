@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="https://emoji.slack-edge.com/T063KNMBD8W/bufo-typing/abafb664e0303576.gif"
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/monokai-sublime.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <title>Code Clicker</title>
+    <link rel="stylesheet" type="text/css" href="scroll.css" />
+  </head>
+  <body style="background-color: #333; font-family: monospace">
+    <div id="app">
+      <h1 style="text-align: center; color: #ae81ff; font-size: 64px">Code Clicker!</h1>
+      <div style="text-align: center">
+        <button
+          id="clicker"
+          style="
+            font-family: monospace;
+            padding: 16px;
+            font-size: 42px;
+            border: none;
+            color: aquamarine;
+            background: #222;
+            border-radius: 4px;
+          "
+        >
+          Add code!
+        </button>
+      </div>
+      <div
+        id="kb"
+        style="
+          text-align: center;
+          font-family: monospace;
+          font-size: 18px;
+          color: #f92672;
+          padding: 18px;
+        "
+      >
+        You've added 0kb of code
+      </div>
+      <pre
+        style="background-color: #222; padding: 28px; color: antiquewhite"
+      ><code id="code" class="language-javascript">// Click the button to add code!</code></pre>
+    </div>
+    <script>
+      async function makeClicker() {
+        hljs.highlightAll();
+        async function fetchLodash() {
+          const response = await fetch(
+            'https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.js',
+          );
+          const data = await response.text();
+          return data;
+        }
+        function byteSize(str) {
+          return new Blob([str]).size;
+        }
+        const sizeComparisons = [
+          { name: 'the word "Felix"', size: new Blob(['Felix']).size / 1000 },
+          { name: 'The Gettysburg Address', size: 1.475 },
+          { name: 'React 16', size: 5.3 },
+          { name: 'React 15.6.1', size: 20.7 },
+          { name: 'Minified Lodash', size: 70 },
+          { name: 'React DOM 16', size: 103.7 },
+          { name: 'React DOM 15.6.1', size: 141 },
+          { name: 'The Great Gatsby', size: 317 },
+          { name: 'Frankenstein', size: 455 },
+          { name: 'Unminified Lodash', size: 544 },
+          { name: 'Pride and Prejudice', size: 833 },
+          { name: 'A Tale of Two Cities', size: 922 },
+          { name: 'Moby Dick', size: 1400 },
+          { name: 'Middlemarch', size: 1800 },
+          { name: 'War and Peace', size: 3700 },
+          { name: 'The Bible', size: 4600 },
+          { name: 'Notion Prerender Bundles', size: 9000 },
+        ].sort((a, b) => a.size - b.size);
+
+        const lodash = await fetchLodash();
+        const clickerElement = document.querySelectorAll('#clicker')[0];
+        const kbElement = document.querySelectorAll('#kb')[0];
+        const codeElement = document.querySelectorAll('#code')[0];
+
+        let code = '';
+        let cursor = 0;
+        const lodashSize = lodash.length;
+
+        clickerElement.addEventListener('click', () => {
+          code += lodash.slice(cursor, cursor + 100);
+          codeElement.innerHTML = hljs.highlight(code, {
+            language: 'javascript',
+            ignoreIllegals: true,
+          }).value;
+          cursor += 100;
+          if (cursor > lodashSize) {
+            cursor = 0;
+          }
+          const size = byteSize(code) / 1000;
+          const comparisonIndex =
+            sizeComparisons.findIndex((comparison) => comparison.size > size) - 1;
+          if (comparisonIndex === -1) {
+            kbElement.textContent = `You've added ${size}kb of code.`;
+          } else {
+            const comparison = sizeComparisons[comparisonIndex];
+            kbElement.textContent = `You've added ${size}kb of code. ${comparison.name} is ${comparison.size}kb`;
+          }
+        });
+      }
+      makeClicker();
+    </script>
+  </body>
+</html>

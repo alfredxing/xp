@@ -44,7 +44,7 @@ const DesktopIcon: React.FC<DesktopIconProps> = ({ icon, label, onClick, isRecyc
 			onDoubleClick={handleDoubleClick}
 			ref={iconRef}
 		>
-			<div className="desktop__icon__image">{icon}</div>
+			<img className="desktop__icon__image" src={icon} />
 			<div className="desktop__icon__label">{label}</div>
 		</div>
 	);

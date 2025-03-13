@@ -56,24 +56,25 @@ export const Taskbar: React.FC = () => {
 	const handleStartClick = () => {
 		createWindow({
 			title: 'explorer.exe',
-			content: (
-				<div
-					style={{ height: '100%', padding: '20px', textAlign: 'center', background: '#ECE9D8' }}
-				>
-					<p style={{ marginBottom: '15px' }}>Application not found</p>
-					<button
-						onClick={(e) => {
-							const windowElement = e.currentTarget.closest('.window');
-							const windowId = windowElement?.getAttribute('data-id');
-							if (windowId) closeWindow(windowId);
-						}}
-					>
-						OK
-					</button>
-				</div>
-			),
+			content: (() => {
+				const onClick = (e: React.MouseEvent) => {
+					const windowElement = e.currentTarget.closest('.window');
+					const windowId = windowElement?.getAttribute('data-id');
+					if (windowId) closeWindow(windowId);
+				};
+
+				return (
+					<div style={{ padding: '8px 0 16px' }}>
+						<p style={{ textAlign: 'center', margin: '1em 0' }}>Application not found.</p>
+						<section className="field-row" style={{ justifyContent: 'center' }}>
+							<button onClick={onClick}>OK</button>
+						</section>
+					</div>
+				);
+			})(),
 			position: { x: 100, y: 100 },
-			size: { width: 300, height: 150 },
+			size: { width: 300, height: 124 },
+			fixedSize: true,
 		});
 	};
 
@@ -87,8 +88,14 @@ export const Taskbar: React.FC = () => {
 						className={`taskbar__item ${activeWindowId === window.id && !window.isMinimized ? 'taskbar__item--active' : 'taskbar__item--inactive'}`}
 						onClick={() => handleTaskbarItemClick(window.id)}
 					>
-						{window.icon && <span style={{ marginRight: '5px' }}>{window.icon}</span>}
-						{window.title}
+						{(window.taskbarIcon ?? window.icon) && (
+							<img
+								width={16}
+								src={window.taskbarIcon ?? window.icon}
+								style={{ marginRight: '5px', marginLeft: '-2px', transform: 'translateY(1px)' }}
+							/>
+						)}
+						<span className="taskbar__item__label">{window.title}</span>
 					</div>
 				))}
 			</div>

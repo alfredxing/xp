@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Windows Movie Maker</title>
+        <style>
+            body {
+                font-family: 'Tahoma', sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #ece9d8;
+                overflow: hidden;
+            }
+
+            .window {
+                width: 100%;
+                height: 100vh;
+                border: 1px solid #0055e5;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+                display: flex;
+                flex-direction: column;
+            }
+
+            .title-bar {
+                background: linear-gradient(to right, #0a246a, #a6caf0);
+                color: white;
+                padding: 2px 8px;
+                font-weight: bold;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .title-buttons {
+                display: flex;
+            }
+
+            .title-button {
+                width: 20px;
+                height: 20px;
+                margin-left: 2px;
+                background-color: #d4d0c8;
+                border: 1px solid #808080;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 10px;
+                cursor: pointer;
+            }
+
+            .close-button {
+                background-color: #d4d0c8;
+            }
+
+            .close-button:hover {
+                background-color: #ff0000;
+                color: white;
+            }
+
+            .menu-bar {
+                background-color: #ece9d8;
+                border-bottom: 1px solid #aca899;
+                padding: 2px 0;
+            }
+
+            .menu-bar ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+                display: flex;
+            }
+
+            .menu-bar li {
+                padding: 2px 10px;
+                cursor: pointer;
+            }
+
+            .menu-bar li:hover {
+                background-color: #316ac5;
+                color: white;
+            }
+
+            .toolbar {
+                background-color: #ece9d8;
+                border-bottom: 1px solid #aca899;
+                padding: 2px;
+                display: flex;
+                align-items: center;
+            }
+
+            .toolbar-button {
+                width: 24px;
+                height: 24px;
+                background-color: #ece9d8;
+                border: 1px solid #ece9d8;
+                margin-right: 2px;
+                cursor: pointer;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 12px;
+            }
+
+            .toolbar-button:hover {
+                border: 1px solid #aca899;
+                background-color: #ffe7a2;
+            }
+
+            .toolbar-separator {
+                width: 1px;
+                height: 20px;
+                background-color: #aca899;
+                margin: 0 5px;
+            }
+
+            .toolbar-dropdown {
+                height: 24px;
+                margin-left: 5px;
+                display: flex;
+                align-items: center;
+                font-size: 12px;
+                background-color: white;
+                border: 1px solid #aca899;
+                padding: 0 5px;
+            }
+
+            .content {
+                display: flex;
+                flex: 1;
+                overflow: hidden;
+            }
+
+            .sidebar {
+                width: 200px;
+                background-color: #d6dff7;
+                border-right: 1px solid #aca899;
+                overflow-y: auto;
+            }
+
+            .sidebar-title {
+                background-color: #95b3e7;
+                color: black;
+                padding: 5px;
+                font-weight: bold;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .sidebar-title-close {
+                cursor: pointer;
+                font-weight: bold;
+            }
+
+            .sidebar-item {
+                padding: 5px 5px 5px 20px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                font-size: 11px;
+                color: #0000ee;
+            }
+
+            .sidebar-item:hover {
+                background-color: #e3e8f9;
+            }
+
+            .sidebar-item.active {
+                background-color: #ced8f6;
+            }
+
+            .sidebar-item-number {
+                margin-right: 8px;
+                font-weight: bold;
+            }
+
+            .main-content {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+            }
+
+            #main-content-top-row {
+                display: flex;
+            }
+
+            .collections-panel {
+                background-color: white;
+                border-bottom: 1px solid #aca899;
+                padding: 0;
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
+
+            .collections-header {
+                background-color: #ece9d8;
+                padding: 5px;
+                border-bottom: 1px solid #aca899;
+            }
+
+            .collections-title {
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+            .collections-subtitle {
+                font-size: 11px;
+                color: #333;
+            }
+
+            .collections-view {
+                display: flex;
+                flex-wrap: wrap;
+                overflow-y: auto;
+                padding: 10px;
+            }
+
+            .clip {
+                width: 100px;
+                height: 95px;
+                position: relative;
+                cursor: pointer;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .clip.active {
+                background-color: #d6dff7;
+            }
+
+            .clip img {
+                width: 100px;
+                height: 75px;
+                object-fit: cover;
+                border: 1px dashed #aca899;
+            }
+
+            .clip-name {
+                font-size: 11px;
+                text-align: center;
+                width: 100%;
+                padding: 2px 0;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .preview-panel {
+                height: 200px;
+                background-color: black;
+                border-top: 1px solid #aca899;
+                margin: 0;
+                position: relative;
+                width: 50%;
+                height: 400px;
+            }
+
+            #preview-image {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+            }
+
+            .preview-controls {
+                position: absolute;
+                bottom: 5px;
+                left: 0;
+                right: 0;
+                height: 25px;
+                background-color: #d4d0c8;
+                border-top: 1px solid #aca899;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .preview-button {
+                width: 20px;
+                height: 20px;
+                background-color: #ece9d8;
+                border: 1px solid #aca899;
+                margin: 0 2px;
+                cursor: pointer;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 10px;
+            }
+
+            .preview-button:hover {
+                background-color: #ffe7a2;
+            }
+
+            .preview-status {
+                position: absolute;
+                top: 5px;
+                left: 5px;
+                background-color: rgba(0, 0, 0, 0.5);
+                color: white;
+                padding: 2px 5px;
+                font-size: 10px;
+                border-radius: 2px;
+            }
+
+            .preview-time {
+                position: absolute;
+                bottom: 30px;
+                right: 5px;
+                background-color: rgba(0, 0, 0, 0.5);
+                color: white;
+                padding: 2px 5px;
+                font-size: 10px;
+                border-radius: 2px;
+            }
+
+            .timeline {
+                height: 150px;
+                background-color: white;
+                border-top: 1px solid #aca899;
+                padding: 0;
+                position: relative;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .timeline-header {
+                height: 25px;
+                background-color: #ece9d8;
+                border-bottom: 1px solid #aca899;
+                display: flex;
+                align-items: center;
+                padding: 0 5px;
+            }
+
+            .timeline-content {
+                flex: 1;
+                background-color: #f0f0f0;
+                display: flex;
+                overflow: auto;
+            }
+
+            .timeline-clip {
+                margin: 5px;
+                border: 1px solid #aca899;
+                height: 100px;
+                flex-shrink: 0;
+                position: relative;
+                cursor: pointer;
+            }
+
+            .timeline-clip img {
+                height: 100%;
+                width: 100px;
+                object-fit: cover;
+            }
+
+            .timeline-transitions {
+                position: absolute;
+                height: 20px;
+                background-color: #ece9d8;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                display: flex;
+            }
+
+            .timeline-transition {
+                width: 30px;
+                height: 20px;
+                background-color: #f0f0f0;
+                border: 1px solid #aca899;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 14px;
+            }
+
+            .status-bar {
+                height: 20px;
+                background-color: #ece9d8;
+                border-top: 1px solid #aca899;
+                padding: 2px 5px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-size: 10px;
+            }
+
+            p {
+                margin: 0.5rem 0;
+            }
+        </style>
+    </head>
+
+    <script>
+        // handwritten havascript!!!!
+
+        // default clip
+        let currentClipIdx = 0;
+
+        function makeClipActive(selectedClipIdx) {
+            currentClipIdx = selectedClipIdx;
+
+            updateVideoPreview();
+        }
+
+        const clipUrls = ['kat-sports.jpg', 'kat-cake.png', 'kat-ivan.png'];
+
+        function updateVideoPreview() {
+            document.querySelector('#preview-image').setAttribute('src', clipUrls[currentClipIdx]);
+        }
+    </script>
+
+    <body>
+        <div class="window">
+            <div class="menu-bar">
+                <ul>
+                    <li>File</li>
+                    <li style="background-color: #316ac5; color: white">Edit</li>
+                    <li>View</li>
+                    <li>Tools</li>
+                    <li>Clip</li>
+                    <li>Play</li>
+                    <li>Help</li>
+                </ul>
+            </div>
+            <div class="toolbar">
+                <div class="toolbar-button" title="New Project">📄</div>
+                <div class="toolbar-button" title="Open Project">📂</div>
+                <div class="toolbar-button" title="Save Project">💾</div>
+                <div class="toolbar-separator"></div>
+                <div class="toolbar-button" title="Undo">↩️</div>
+                <div class="toolbar-button" title="Redo">↪️</div>
+                <div class="toolbar-separator"></div>
+                <div class="toolbar-button" title="Task Pane">☰</div>
+                <div class="toolbar-button" title="Collections">🗂️</div>
+                <div class="toolbar-dropdown">sample</div>
+                <div class="toolbar-separator"></div>
+                <div class="toolbar-button" title="Zoom In">🔍+</div>
+                <div class="toolbar-button" title="Zoom Out">🔍-</div>
+            </div>
+            <div class="content">
+                <div class="sidebar">
+                    <div class="sidebar-title">
+                        <span>Movie Tasks</span>
+                        <span class="sidebar-title-close">×</span>
+                    </div>
+                    <div class="sidebar-item">
+                        <span class="sidebar-item-number">1.</span>
+                        <span>Capture Video</span>
+                    </div>
+                    <div class="sidebar-item">
+                        <span>Capture from video device</span>
+                    </div>
+                    <div class="sidebar-item">
+                        <span>Import video</span>
+                    </div>
+                    <div class="sidebar-item">
+                        <span>Import pictures</span>
+                    </div>
+                    <div class="sidebar-item">
+                        <span>Import audio or music</span>
+                    </div>
+                    <div class="sidebar-item">
+                        <span class="sidebar-item-number">2.</span>
+                        <span>Edit Movie</span>
+                    </div>
+                    <div class="sidebar-item">
+                        <span class="sidebar-item-number">3.</span>
+                        <span>Finish Movie</span>
+                    </div>
+                    <div class="sidebar-title">
+                        <span>Movie Making Tips</span>
+                        <span class="sidebar-title-close">×</span>
+                    </div>
+                    <div class="sidebar-item">
+                        <span>How to capture video</span>
+                    </div>
+                    <div class="sidebar-item">
+                        <span>How to edit clips</span>
+                    </div>
+                    <div class="sidebar-item">
+                        <span>How to add titles, effects, transitions</span>
+                    </div>
+                    <div class="sidebar-item">
+                        <span>How to save and share movies</span>
+                    </div>
+                </div>
+                <div class="main-content">
+                    <div id="main-content-top-row">
+                        <div class="collections-panel">
+                            <div class="collections-header">
+                                <div class="collections-title">Collection: sample</div>
+                                <div class="collections-subtitle">
+                                    Drag a clip and drop it on the storyboard below.
+                                </div>
+                            </div>
+                            <div class="collections-view">
+                                <p>
+                                    Happy two years at Notion, Felix! I'm excited to be on your team :) Here's to more
+                                    cool hacks and memorable adventures!
+                                </p>
+                                <p>— Kat</p>
+                            </div>
+                        </div>
+                        <div class="preview-panel">
+                            <img src="kat-sports.jpg" alt="Video Preview" id="preview-image" />
+                            <div class="preview-status">Paused</div>
+                            <div class="preview-time">00:00:00.00 / 00:00:01.87</div>
+                            <div class="preview-controls">
+                                <div class="preview-button">⏯️</div>
+                                <div class="preview-button">⏹️</div>
+                                <div class="preview-button">⏮️</div>
+                                <div class="preview-button">⏪</div>
+                                <div class="preview-button">⏩</div>
+                                <div class="preview-button">⏭️</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline">
+                        <div class="timeline-header">
+                            <div class="toolbar-button">🎬</div>
+                            <span style="margin-left: 5px">Show Timeline</span>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-clip" onClick="makeClipActive(0)">
+                                <img src="kat-sports.jpg" alt="Timeline Clip" />
+                                <div class="timeline-transitions">
+                                    <div class="timeline-transition">→</div>
+                                </div>
+                            </div>
+                            <div class="timeline-clip" onClick="makeClipActive(1)">
+                                <img src="kat-cake.png" alt="Timeline Clip" />
+                                <div class="timeline-transitions">
+                                    <div class="timeline-transition">→</div>
+                                </div>
+                            </div>
+                            <div class="timeline-clip" onClick="makeClipActive(2)">
+                                <img src="kat-ivan.png" alt="Timeline Clip" />
+                                <div class="timeline-transitions">
+                                    <div class="timeline-transition">→</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="status-bar">
+                <span>Ready</span>
+            </div>
+        </div>
+        <script>
+            // code that needs to run after the html
+
+            // initialize video preview
+            updateVideoPreview();
+        </script>
+    </body>
+</html>

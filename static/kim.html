@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Felix's 2-Year Notion Anniversary</title>
+    <link rel="stylesheet" type="text/css" href="scroll.css" />
+    <style>
+      body {
+        background-color: #1e1e1e;
+        color: #00ff00;
+        font-family: 'Courier New', monospace;
+        padding: 0;
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .terminal {
+        background-color: #0c0c0c;
+        _border-radius: 10px;
+        _border: 2px solid #333;
+        _box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+        _padding: 20px;
+        flex-grow: 1;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .terminal-header {
+        display: flex;
+        align-items: center;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #333;
+        margin-bottom: 15px;
+      }
+
+      .terminal-buttons {
+        display: flex;
+        margin-right: 15px;
+      }
+
+      .terminal-button {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 8px;
+      }
+
+      .close {
+        background-color: #ff5f56;
+      }
+      .minimize {
+        background-color: #ffbd2e;
+      }
+      .maximize {
+        background-color: #27c93f;
+      }
+
+      .terminal-title {
+        color: #ddd;
+        flex-grow: 1;
+        text-align: center;
+        font-size: 14px;
+      }
+
+      .terminal-content {
+        overflow-y: auto;
+        height: calc(100% - 30px);
+        padding: 20px 30px 20px 20px;
+      }
+
+      .line {
+        margin: 0;
+        padding: 3px 0;
+        white-space: pre-wrap;
+        line-height: 1.4;
+        opacity: 0;
+        animation: fadeIn 0.1s forwards;
+      }
+
+      .prompt {
+        color: #ff5f56;
+      }
+
+      .cursor {
+        display: inline-block;
+        width: 10px;
+        height: 18px;
+        background-color: #00ff00;
+        margin-left: 5px;
+        animation: blink 1s infinite;
+      }
+
+      .ascii-art {
+        color: #ffbd2e;
+        white-space: pre;
+        font-family: monospace;
+        line-height: 1.2;
+        margin: 20px 0;
+      }
+
+      @keyframes blink {
+        0%,
+        49% {
+          opacity: 1;
+        }
+        50%,
+        100% {
+          opacity: 0;
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes typing {
+        from {
+          width: 0;
+        }
+        to {
+          width: 100%;
+        }
+      }
+
+      .typing-effect {
+        overflow: hidden;
+        white-space: nowrap;
+        animation: typing 2s steps(60, end) forwards;
+        width: 0;
+      }
+
+      .confetti {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        opacity: 0.8;
+        animation: fall linear forwards;
+      }
+
+      @keyframes fall {
+        to {
+          transform: translateY(100vh);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="terminal-content" id="terminal-content">
+      <!-- Content will be filled dynamically -->
+    </div>
+
+    <script>
+      const content = document.getElementById('terminal-content');
+
+      // Lines to display
+      const lines = [
+        { text: 'notion@system:~$ ./celebrate.sh felix 2', delay: 300, prompt: true },
+        { text: 'Initializing celebration protocol...', delay: 800 },
+        { text: 'Collecting employee data: felix.json', delay: 600 },
+        { text: 'Analyzing Notion contributions...', delay: 1000 },
+        { text: 'Parsing timeline...', delay: 500 },
+        { text: 'Calculating impact metrics...', delay: 800 },
+        { text: '[====================================] 100% complete', delay: 1200 },
+        { text: 'Status: Employee_Extraordinary', delay: 600 },
+        { text: '', delay: 300 },
+        {
+          text: `
+   ______    ____     __    __   ______   ______   ___  _____ _______   __    ______
+  |   ___|  |    |   |  |  |  | |   ___| |   _  \\ |   |/     |_____  | |  |  |   ___|
+  |   |__   |    |_  |  |  |  | |   |__  |  |_)  ||      <     ___/  | |  |  |   |__
+  |    __|  |    | | \\  \\/  /  |    __| |      / |    |  \\   /   |  | |  |  |    __|
+  |___|     |____| |  \\____/   |___|    |__|\\__\\ |____|___\\ |___|  | |__|  |___|
+        `,
+          delay: 300,
+          isAscii: true,
+        },
+        { text: '', delay: 300 },
+        {
+          text: `
+   _____    __   ___________   _______    ______
+  |  _  \\  |  | |           | |   __  \\  |   ___|
+  | | |  | |  | |____   ____| |  |__| /  |   |__
+  | | |  | |  |      | |      |      /   |    __|
+  |_| |__| |__|      |_|      |___|\\_\\   |___|
+        `,
+          delay: 300,
+          isAscii: true,
+        },
+        { text: '', delay: 300 },
+        { text: '2 YEARS AT NOTION', delay: 300, isAscii: true },
+        { text: '', delay: 600 },
+        { text: 'notion@system:~$ ./display_achievements.sh', delay: 800, prompt: true },
+        { text: 'Achievements unlocked:', delay: 600 },
+        { text: '✓ Notion Master [Level 2]', delay: 700 },
+        { text: '✓ Team Collaborator Extraordinaire', delay: 700 },
+        { text: '✓ Problem Solver Elite', delay: 700 },
+        { text: '✓ 2-Year Resilience Badge', delay: 700 },
+        { text: '✓ Culture Champion', delay: 700 },
+        { text: '', delay: 500 },
+        { text: 'notion@system:~$ ./display_message.sh', delay: 800, prompt: true },
+        {
+          text: `
+  ┌──────────────────────────────────────────────────────────┐
+  │                                                          │
+  │  Congratulations on your 2nd Notion Anniversary, Felix!  │
+  │                                                          │
+  │  For two years, you've been an invaluable part of the    │
+  │  Notion family. Your dedication, creativity, and         │
+  │  contributions have made a significant impact.           │
+  │                                                          │
+  │  Here's to many more years of building the future        │
+  │  together at Notion!                                     │
+  │                                                          │
+  └──────────────────────────────────────────────────────────┘
+        `,
+          delay: 300,
+          isBox: true,
+        },
+        { text: '', delay: 300 },
+        { text: 'notion@system:~$ ./launch_confetti.sh', delay: 800, prompt: true },
+        { text: '[Launching celebration mode...]', delay: 600 },
+        { text: 'notion@system:~$ █', delay: 300, prompt: true, showCursor: true },
+      ];
+
+      // Colors for confetti
+      const confettiColors = [
+        '#ff5f56',
+        '#ffbd2e',
+        '#27c93f',
+        '#00ff00',
+        '#ff00ff',
+        '#0000ff',
+        '#00ffff',
+        '#ffffff',
+        '#ffff00',
+      ];
+
+      // Add a line to the terminal
+      function addLine(
+        line,
+        hasPrompt = false,
+        isAscii = false,
+        isBox = false,
+        showCursor = false,
+      ) {
+        const p = document.createElement('p');
+        p.className = 'line';
+
+        if (isAscii) {
+          p.className += ' ascii-art';
+          p.textContent = line;
+        } else if (isBox) {
+          p.className += ' ascii-art';
+          p.textContent = line;
+        } else {
+          if (hasPrompt) {
+            const promptSpan = document.createElement('span');
+            promptSpan.className = 'prompt';
+            promptSpan.textContent = 'notion@system:~$ ';
+            p.appendChild(promptSpan);
+          }
+
+          const textSpan = document.createElement('span');
+          textSpan.className = 'typing-effect';
+          textSpan.textContent = hasPrompt ? line.substring(16) : line;
+          p.appendChild(textSpan);
+        }
+
+        if (showCursor) {
+          const cursor = document.createElement('span');
+          cursor.className = 'cursor';
+          p.appendChild(cursor);
+        }
+
+        content.appendChild(p);
+        content.scrollTop = content.scrollHeight;
+      }
+
+      // Create confetti
+      function createConfetti() {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+
+        // Random position
+        const left = Math.random() * 100;
+        confetti.style.left = `${left}%`;
+
+        // Random color
+        const color = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+        confetti.style.backgroundColor = color;
+
+        // Random shape (square or circle)
+        confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+
+        // Random size
+        const size = Math.random() * 8 + 5;
+        confetti.style.width = `${size}px`;
+        confetti.style.height = `${size}px`;
+
+        // Random rotation
+        confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+
+        // Animation duration
+        const duration = Math.random() * 3 + 2;
+        confetti.style.animationDuration = `${duration}s`;
+
+        document.querySelector('.terminal').appendChild(confetti);
+
+        // Remove after animation
+        setTimeout(() => {
+          confetti.remove();
+        }, duration * 1000);
+      }
+
+      // Display lines with delays
+      async function displayLines() {
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i];
+          await new Promise((resolve) => setTimeout(resolve, line.delay));
+          addLine(line.text, line.prompt, line.isAscii, line.isBox, line.showCursor);
+
+          // Start confetti after the celebration message
+          if (i === lines.length - 3) {
+            setInterval(createConfetti, 200);
+          }
+        }
+      }
+
+      // Start the terminal animation
+      window.onload = displayLines;
+    </script>
+  </body>
+</html>
