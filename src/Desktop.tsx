@@ -218,6 +218,19 @@ Sophie`}
 		});
 	};
 
+	const openJi = () => {
+		createWindow({
+			title: 'yash.txt - Notepad',
+			content: (
+				<Notepad
+					text={`Hi Felix, it was so awesome working with you and getting to know you closely the past year! You hired 6 people that's 100% growth, and more importantly built an incredible team that's fun and high impact. I trust you with hardest challenges with our org and glad I have you as a partner to lead the team together! Looking forward to more years to come! And maybe beautiful wedding photos in Italy!`}
+				/>
+			),
+			position: { x: 90, y: 40 },
+			size: { width: 800, height: window.innerHeight * 0.5 },
+		});
+	};
+
 	const openSlim = () => {
 		createWindow({
 			title: 'slim.txt - Notepad',
@@ -320,6 +333,7 @@ Slim`}
 				<DesktopIcon icon={UPDATE_ICON} label="Sam" onClick={openSam} />
 				<DesktopIcon icon={TEXT_ICON} label="Ankit" onClick={openAnkit} />
 				<DesktopIcon icon={URL_ICON} label="Anny" onClick={openAnny} />
+				<DesktopIcon icon={TEXT_ICON} label="Ji" onClick={openJi} />
 				<DesktopIcon icon={RECYCLE_ICON} label="Recycle Bin" isRecycleBin onClick={openExplorer} />
 			</div>
 			{isWinampOpen && <WinampClone close={() => setIsWinampOpen(false)} />}
