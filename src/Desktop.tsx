@@ -156,6 +156,17 @@ export const Desktop: React.FC = () => {
 		});
 	};
 
+	const openAnny = () => {
+		createWindow({
+			title: 'Anny - Microsoft Internet Explorer',
+			content: <InternetExplorer url="anny/index.html" />,
+			position: { x: 100, y: 20 },
+			size: { width: 1024, height: window.innerHeight - 100 },
+			icon: icons.ie.page,
+			taskbarIcon: IE_ICON,
+		});
+	};
+
 	const openHenry = () => {
 		setIsWinampOpen(true);
 	};
@@ -308,6 +319,7 @@ Slim`}
 				<DesktopIcon icon={URL_ICON} label="Aurora" onClick={openAurora} />
 				<DesktopIcon icon={UPDATE_ICON} label="Sam" onClick={openSam} />
 				<DesktopIcon icon={TEXT_ICON} label="Ankit" onClick={openAnkit} />
+				<DesktopIcon icon={URL_ICON} label="Anny" onClick={openAnny} />
 				<DesktopIcon icon={RECYCLE_ICON} label="Recycle Bin" isRecycleBin onClick={openExplorer} />
 			</div>
 			{isWinampOpen && <WinampClone close={() => setIsWinampOpen(false)} />}
