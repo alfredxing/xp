@@ -1,0 +1,9 @@
+for url in "https://images.apple.com/main/elements/globaliconpdf12x12.gif" "https://images.apple.com/main/elements/globaliconhtml12x1220050802.gif" "https://images.apple.com/main/elements/globaliconqt12x12.gif" "https://images.apple.com/main/elements/globaliconical12x12.gif" "https://images.apple.com/main/elements/globalicondl11x10.gif" "https://images.apple.com/main/elements/globalicondmg12x12.gif" "https://images.apple.com/main/elements/globaliconzip12x12.gif" "https://images.apple.com/main/elements/globaliconkeynote12x12.gif" "https://images.apple.com/main/elements/globaliconaudio12x12.gif" "https://images.apple.com/t/2006/us/en/i/1bg.gif" "https://images.apple.com/t/2006/us/en/i/1.gif" "https://images.apple.com/t/2006/us/en/i/2.gif" "https://images.apple.com/t/2006/us/en/i/3.gif" "https://images.apple.com/t/2006/us/en/i/4.gif" "https://images.apple.com/t/2006/us/en/i/5.gif" "https://images.apple.com/t/2006/us/en/i/6.gif" "https://images.apple.com/t/2006/us/en/i/7.gif" "https://images.apple.com/t/2006/us/en/i/1.12left.gif" "https://images.apple.com/t/2006/us/en/i/1.12a.gif" "https://images.apple.com/t/2006/us/en/i/1.12b.gif" "https://images.apple.com/t/2006/us/en/i/1.12c.gif" "https://images.apple.com/t/2006/us/en/i/1.12d.gif" "https://images.apple.com/t/2006/us/en/i/1.12e.gif" "https://images.apple.com/t/2006/us/en/i/1.12f.gif" "https://images.apple.com/t/2006/us/en/i/1.12g.gif" "https://images.apple.com/t/2006/us/en/i/1.12h.gif" "https://images.apple.com/t/2006/us/en/i/1.12i.gif" "https://images.apple.com/t/2006/us/en/i/1.12j.gif" "https://images.apple.com/t/2006/us/en/i/1.12right.gif"; do
+ wget -q --spider "$url"
+ if [ $? -eq 0 ]; then
+   echo "URL exists: $url"
+   wget -q "$url"
+ else
+   echo "URL does not exist: $url"
+ fi
+done
